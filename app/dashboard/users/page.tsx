@@ -1,5 +1,5 @@
 import Link from "next/link";
-const users = () => {
+const Users = () => {
   return (
     <div>
       <h1>Dashboard Users</h1>
@@ -13,4 +13,4 @@ const users = () => {
   );
 };
 
-export default users;
+export default Users;
