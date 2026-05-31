@@ -1,9 +1,7 @@
-import React from 'react'
-
-const page = () => {
+const users = () => {
   return (
-    <div>page</div>
+    <div>users</div>
   )
 }
 
-export default page
+export default users
