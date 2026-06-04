@@ -1,10 +1,7 @@
 import EventCard from "@/components/EventCard"
 import ExploreBtn from "@/components/ExploreBtn";
-const events = [
-  {image:"/images/event1.png",title:"Hack the Future", date:"Aug 15, 2026", location:"Oslo, Norway",slug:"event-1"},
-  {image:"/images/event2.png",title:"CodeCon 2026", date:"Sep 10, 2026", location:"San Francisco, USA",slug:"event-2"},
-  {image:"/images/event3.png",title:"DevSummit", date:"Oct 5, 2026", location:"Berlin, Germany",slug:"event-3"},
-]
+import Image from "next/image";
+import events from "@/lib/constants";
 
 const page = () => {
   return (

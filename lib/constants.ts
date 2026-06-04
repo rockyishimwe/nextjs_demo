@@ -10,10 +10,10 @@ export type EventItem = {
 export const events: EventItem[] = [
   {
     image: "/images/event1.png",
-    title: "React Summit US 2025",
-    slug: "react-summit-us-2025",
-    location: "San Francisco, CA, USA",
-    date: "2025-11-07",
+    title: "RCA SUMMIT RWANDA 2026",
+    slug: "rca-summit-rwanda-2026",
+    location: "Kigali, Rwanda",
+    date: "2026-05-15",
     time: "09:00 AM",
   },
   {
@@ -57,7 +57,7 @@ export const events: EventItem[] = [
     time: "10:00 AM",
   },
   {
-    image: "/images/events-full.png",
+    image: "/images/event6.png",
     title: "Open Source Summit North America 2026",
     slug: "oss-na-2026",
     location: "Vancouver, Canada",
