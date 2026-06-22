@@ -56,3 +56,9 @@ BookingSchema.pre('save', async function (next) {
 
   next();
 });
+//create index on eventId for faster queries
+BookingSchema.index({ eventId: 1 });
+//create compound index for common queries (events bookings by date)
+BookingSchema.index({eventId:1,createdAt:-1});
+//create index on email for user booking lookups
+BookingSchema.index({email:1});
