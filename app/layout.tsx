@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import { Schibsted_Grotesk, Martian_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Suspense } from "react";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
+import { PostHogProvider } from "./providers";
+import PostHogPageView from "./_components/PostHogPageView";
 
 const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted-grotesk",
@@ -34,7 +37,11 @@ export default function RootLayout({
       <body
         className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
       >
-      <Navbar />
+      <PostHogProvider>
+        <Suspense fallback={null}>
+          <PostHogPageView />
+        </Suspense>
+        <Navbar />
 
           <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
               <LightRays
@@ -53,6 +60,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+      </PostHogProvider>
       </body>
     </html>
   );
