@@ -38,6 +38,8 @@ BookingSchema.pre('save',async funtion (next){
     const booking = this as IBooking;
     //only validate eventId if it's new or modified
     if(booking.isModified('eventId') || booking.isNew){
-
+      try {
+        const eventExists = await Event.findByID(Booking.eventId).select('_id');
+      }
     }
 })
