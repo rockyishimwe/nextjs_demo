@@ -2,6 +2,7 @@ import EventCard from "@/components/EventCard"
 import ExploreBtn from "@/components/ExploreBtn";
 import Image from "next/image";
 import events from "@/lib/constants";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const page = () => {
   return (
