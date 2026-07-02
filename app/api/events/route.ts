@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
 export async function GET(){
   try {
     await connectDB();
+    const events = await Event.find().sort({created:-1});
   } catch(e){
     return NextResponse.json({message:'Event fetching failed',error:e},{status:500});
   }
