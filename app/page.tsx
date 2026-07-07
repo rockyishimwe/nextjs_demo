@@ -1,10 +1,8 @@
 import EventCard from "@/components/EventCard"
 import ExploreBtn from "@/components/ExploreBtn";
-import Image from "next/image";
 import events from "@/lib/constants";
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const page = () => {
+const Page = () => {
   return (
     <section>
             <h1 className="text-center">The Hub for Every Dev <br /> Event You Can't Miss</h1>
@@ -28,4 +26,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

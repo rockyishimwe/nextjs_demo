@@ -13,7 +13,15 @@ interface Props {
 const EventCard = ({ title, image, slug, location, date, time }: Props) => {
     return (
         <Link href={`/events/${slug}`} id="event-card">
-            <Image src={image} alt={title} width={410} height={300} className="poster" />
+            <div className="relative h-[300px] w-full">
+                <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    className="rounded-lg object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                />
+            </div>
 
             <div className="flex flex-row gap-2">
                 <Image src="/icons/pin.svg" alt="location" width={14} height={14} />
