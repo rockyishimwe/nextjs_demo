@@ -1,27 +1,31 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'res.cloudinary.com',
-            }
-        ]
-    },
-  async rewrites() {
+const nextConfig = {
+  experimental: {
+    cacheComponents: true, // Enable the experimental feature flag
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      }
+    ],
+  },
+  async redirects() {
     return [
       {
         source: "/ingest/static/:path*",
         destination: "https://us-assets.i.posthog.com/static/:path*",
+        permanent: true, // Permanent redirect if needed
       },
       {
         source: "/ingest/:path*",
         destination: "https://us.i.posthog.com/:path*",
+        permanent: true, // Permanent redirect if needed
       },
     ];
   },
-  // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 };
 
