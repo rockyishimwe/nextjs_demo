@@ -1,6 +1,6 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import {IEvent} from "@/database";
+import {IEvent} from "@/app/database/event.model";
 import {cacheLife} from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -9,13 +9,19 @@ const Page = async () => {
     'use cache';
     cacheLife('hours');
     
-    const response = await fetch(`${BASE_URL}/api/events`);
+    let events: IEvent[] = [];  
     
-    if (!response.ok) {
-        throw new Error(`Failed to fetch events: ${response.status}`);
+    try {
+        const response = await fetch(`${BASE_URL}/api/events`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        events = data.events;  // ✅ now assigned here
+        console.log(events);
+    } catch (error) {
+        console.error('Fetched failed:', error);
     }
-    
-    const { events } = await response.json();
 
     return (
         <section>
@@ -28,13 +34,11 @@ const Page = async () => {
                 <h3>Featured Events</h3>
 
                 <ul className="events">
-                    {events && events.length > 0 ? events.map((event: IEvent) => (
+                    {events.length > 0 && events.map((event: IEvent) => (
                         <li key={event.title} className="list-none">
                             <EventCard {...event} />
                         </li>
-                    )) : (
-                        <p className="text-center text-gray-500">No events found.</p>
-                    )}
+                    ))}
                 </ul>
             </div>
         </section>
