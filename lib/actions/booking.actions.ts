@@ -2,6 +2,7 @@
 import Booking from "@/app/database/booking.model";
 import Event from "@/app/database/event.model";
 import connectDB from "../mongodb";
+import { rateLimit } from "../rateLimiter";
 
 export const createBooking = async ({
   eventId,
@@ -13,10 +14,20 @@ export const createBooking = async ({
   email: string;
 }) => {
   try {
+    if (!email || typeof email !== "string" || !email.includes("@")) {
+      return { success: false, message: "Invalid email address." };
+    }
+
+    // Rate limit check by email (max 5 requests per minute)
+    const rateCheck = rateLimit(`booking:${email.trim().toLowerCase()}`, 5, 60_000);
+    if (!rateCheck.allowed) {
+      return { success: false, message: "Too many booking attempts. Please try again later." };
+    }
+
     await connectDB();
 
     // Prevent the same email from booking an event twice
-    const existing = await Booking.findOne({ eventId, email });
+    const existing = await Booking.findOne({ eventId, email: email.trim().toLowerCase() });
     if (existing) {
       return { success: false, message: "You've already booked this event." };
     }
@@ -30,7 +41,7 @@ export const createBooking = async ({
       }
     }
 
-    await Booking.create({ eventId, slug, email });
+    await Booking.create({ eventId, slug, email: email.trim().toLowerCase() });
 
     return { success: true };
   } catch (e) {

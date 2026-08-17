@@ -52,6 +52,14 @@ export const getAdminEvents = async (
   q = "",
 ) => {
   try {
+    if (!(await isAdmin())) {
+      return {
+        events: [] as IEvent[],
+        total: 0,
+        bookingMap: new Map<string, number>(),
+      };
+    }
+
     await connectDB();
 
     const skip = (page - 1) * pageSize;
