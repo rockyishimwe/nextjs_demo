@@ -1,8 +1,8 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import type { Route } from "next";
 
 type FormState = {
@@ -274,7 +274,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="date">Event Date</label>
         <div className="input-wrap">
-          <Image
+          <img
             src="/icons/calendar.svg"
             alt=""
             width={16}
@@ -295,7 +295,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="time">Event Time</label>
         <div className="input-wrap">
-          <Image
+          <img
             src="/icons/clock.svg"
             alt=""
             width={16}
@@ -316,7 +316,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="venue">Event Location</label>
         <div className="input-wrap">
-          <Image
+          <img
             src="/icons/pin.svg"
             alt=""
             width={16}
@@ -345,7 +345,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
             <option value="online">Online</option>
             <option value="hybrid">Hybrid</option>
           </select>
-          <Image
+          <img
             src="/icons/arrow-down.svg"
             alt=""
             width={16}
@@ -368,7 +368,6 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
         <label htmlFor="image" className="upload-box">
           {preview ? (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={preview}
                 alt="Banner preview"
@@ -380,7 +379,6 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
             </>
           ) : initialData?.image && isEditing ? (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={initialData.image}
                 alt="Current banner"

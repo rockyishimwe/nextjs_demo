@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import Image from "next/image";
 
 const ExploreBtn = () => {
   return (
@@ -10,7 +10,7 @@ const ExploreBtn = () => {
     >
       <span className="flex-center gap-2 text-center w-full">
         Explore Events
-        <Image src="/icons/arrow-down.svg" alt="arrow-down" width={20} height={20} />
+        <img src="/icons/arrow-down.svg" alt="arrow-down" width={20} height={20} />
       </span>
     </Link>
   );
