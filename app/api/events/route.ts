@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAdmin } from "@/lib/admin";
 import connectDB from "@/lib/mongodb";
 import { Event } from "@/app/database";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
 import {
   ValidationError,
+  parseCapacity,
   validateCloudinaryConfig,
   validateEventFormData,
   uploadEventImageToCloudinary,
@@ -17,6 +19,11 @@ const RATE_LIMIT_MAX_GET = 30; // 30 GET requests per minute
 // ─── POST /api/events ────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // Admin only
+  if (!(await isAdmin())) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
   // Rate limit check
   const ip = getClientIp(req);
   const rateCheck = rateLimit(`post:${ip}`, RATE_LIMIT_MAX_POST, RATE_LIMIT_WINDOW_MS);
@@ -46,6 +53,7 @@ export async function POST(req: NextRequest) {
 
     // Validate all form fields
     const fields = validateEventFormData(formData);
+    const capacity = parseCapacity(formData);
 
     // Validate and process image
     const file = formData.get("image") as File | null;
@@ -75,6 +83,7 @@ export async function POST(req: NextRequest) {
       organizer: fields.organizer,
       tags: fields.tags,
       agenda: fields.agenda,
+      capacity,
     });
 
     return NextResponse.json(

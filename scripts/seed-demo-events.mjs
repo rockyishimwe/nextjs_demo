@@ -77,6 +77,7 @@ const EventSchema = new Schema(
       required: true,
       validate: { validator: (v) => v.length > 0 },
     },
+    capacity: { type: Number, min: 1 },
   },
   { timestamps: true }
 );
@@ -136,7 +137,7 @@ const Event = models.Event || model("Event", EventSchema);
 // ─── Demo events (images live in /public/images) ────────────────────────────
 const demoEvents = [
   {
-    image: "/images/event1.png",
+    image: "/images/event1.jpg",
     title: "RCA SUMMIT RWANDA 2026",
     location: "Kigali, Rwanda",
     date: "2026-05-15",
@@ -149,6 +150,7 @@ const demoEvents = [
       "A community-driven summit connecting developers, students and startups across Rwanda and beyond.",
     audience: "Developers & tech enthusiasts",
     organizer: "Rwanda Coding Academy",
+    capacity: 600,
     agenda: [
       "Registration & welcome",
       "Keynote: Building Africa's digital future",
@@ -170,6 +172,7 @@ const demoEvents = [
       "Join the cloud native community for the definitive event on Kubernetes and open source infrastructure.",
     audience: "Platform engineers & DevOps teams",
     organizer: "CNCF",
+    capacity: 5000,
     agenda: [
       "Opening keynote",
       "Kubernetes deep dives",
@@ -191,6 +194,7 @@ const demoEvents = [
       "Five days of cloud innovation, training and certifications for AWS builders and architects.",
     audience: "Cloud architects & developers",
     organizer: "Amazon Web Services",
+    capacity: 10000,
     agenda: [
       "Keynote: AWS CEO",
       "Breakout sessions",
@@ -212,6 +216,7 @@ const demoEvents = [
       "A hybrid event for React and web developers covering the latest in Next.js and the modern web.",
     audience: "React & frontend developers",
     organizer: "Vercel",
+    capacity: 3000,
     agenda: [
       "Opening keynote",
       "Framework talks",
@@ -233,6 +238,7 @@ const demoEvents = [
       "Where the Google Cloud ecosystem meets to explore AI, data and cloud infrastructure.",
     audience: "Cloud engineers & data teams",
     organizer: "Google Cloud",
+    capacity: 5000,
     agenda: [
       "Keynote: Google Cloud",
       "AI & ML sessions",
@@ -254,6 +260,7 @@ const demoEvents = [
       "36 hours of building, mentoring and demoing at the world's largest startup campus.",
     audience: "Web3 & blockchain developers",
     organizer: "ETHGlobal",
+    capacity: 800,
     agenda: [
       "Project submissions open",
       "Hacking begins",
@@ -275,6 +282,7 @@ const demoEvents = [
       "Connecting maintainers, contributors and companies advancing open source software.",
     audience: "Open source maintainers & contributors",
     organizer: "The Linux Foundation",
+    capacity: 1500,
     agenda: [
       "Maintainers track",
       "Community keynotes",

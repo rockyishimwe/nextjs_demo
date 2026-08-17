@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAdmin } from "@/lib/admin";
 
 import connectDB from "@/lib/mongodb";
 import Event from "@/app/database/event.model";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
 import {
   ValidationError,
+  parseCapacity,
   validateCloudinaryConfig,
   validateEventFormData,
   uploadEventImageToCloudinary,
@@ -98,6 +100,11 @@ export async function PATCH(
   req: NextRequest,
   { params }: RouteParams,
 ): Promise<NextResponse> {
+  // Admin only
+  if (!(await isAdmin())) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
   // Rate limit check
   const ip = getClientIp(req);
   const rateCheck = rateLimit(
@@ -139,6 +146,7 @@ export async function PATCH(
 
     const formData = await req.formData();
     const fields = validateEventFormData(formData);
+    const capacity = parseCapacity(formData);
 
     // Keep the existing image unless a new file was uploaded
     let image = existing.image;
@@ -160,6 +168,7 @@ export async function PATCH(
     existing.organizer = fields.organizer;
     existing.tags = fields.tags;
     existing.agenda = fields.agenda;
+    existing.capacity = capacity;
 
     // The pre-save hook regenerates the slug if the title changed
     await existing.save();

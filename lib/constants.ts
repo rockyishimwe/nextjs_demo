@@ -9,7 +9,7 @@ export type EventItem = {
 
 export const events: EventItem[] = [
   {
-    image: "/images/event1.png",
+    image: "/images/event1.jpg",
     title: "RCA SUMMIT RWANDA 2026",
     slug: "rca-summit-rwanda-2026",
     location: "Kigali, Rwanda",

@@ -48,13 +48,7 @@ const EditEventPage = async ({
 
   return (
     <section id="create-event">
-      <div className="mb-10 flex flex-col items-start gap-4">
-        <h1>Edit Event</h1>
-        <p className="text-light-100 text-lg max-sm:text-sm">
-          Update the details below. Leave the image untouched to keep the
-          current banner.
-        </p>
-      </div>
+      <h1 className="text-center">Edit Event</h1>
 
       <CreateEventForm initialData={event} slug={slug} />
     </section>

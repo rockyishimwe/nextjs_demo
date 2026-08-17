@@ -121,6 +121,21 @@ export function validateEventFormData(formData: FormData): ValidatedFields {
   } as ValidatedFields;
 }
 
+/**
+ * Parses the optional capacity field. Returns undefined when absent/empty,
+ * throws a ValidationError for non-positive values.
+ */
+export function parseCapacity(formData: FormData): number | undefined {
+  const raw = formData.get("capacity");
+  if (!raw || String(raw).trim() === "") return undefined;
+
+  const capacity = parseInt(String(raw), 10);
+  if (Number.isNaN(capacity) || capacity < 1) {
+    throw new ValidationError('"capacity" must be a positive number');
+  }
+  return capacity;
+}
+
 // ─── Image upload ─────────────────────────────────────────────────────────────
 
 export async function uploadEventImageToCloudinary(

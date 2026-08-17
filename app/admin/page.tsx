@@ -13,12 +13,13 @@ const PAGE_SIZE = 10;
 const AdminPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) => {
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, q: qParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
+  const q = (qParam ?? "").trim();
 
-  const { events, total, bookingMap } = await getAdminEvents(page, PAGE_SIZE);
+  const { events, total, bookingMap } = await getAdminEvents(page, PAGE_SIZE, q);
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
@@ -28,6 +29,7 @@ const AdminPage = async ({
       page={page}
       totalPages={totalPages}
       paginationPath="/admin"
+      search={q}
     />
   );
 };

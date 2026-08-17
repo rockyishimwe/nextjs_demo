@@ -11,6 +11,7 @@ import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
 import { PostHogProvider } from "./providers";
 import PostHogPageView from "./_components/PostHogPageView";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted-grotesk",
@@ -37,30 +38,32 @@ export default function RootLayout({
       <body
         className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
       >
-      <PostHogProvider>
-        <Suspense fallback={null}>
-          <PostHogPageView />
-        </Suspense>
-        <Navbar />
+      <ClerkProvider>
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageView />
+          </Suspense>
+          <Navbar />
 
-          <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
-              <LightRays
-                  raysOrigin="top-center-offset"
-                  raysColor="#5dfeca"
-                  raysSpeed={1.2}
-                  lightSpread={0.9}
-                  rayLength={1.4}
-                  followMouse={true}
-                  mouseInfluence={0.01}
-                  noiseAmount={0.0}
-                  distortion={0.01}
-              />
-          </div>
+            <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+                <LightRays
+                    raysOrigin="top-center-offset"
+                    raysColor="#5dfeca"
+                    raysSpeed={1.2}
+                    lightSpread={0.9}
+                    rayLength={1.4}
+                    followMouse={true}
+                    mouseInfluence={0.01}
+                    noiseAmount={0.0}
+                    distortion={0.01}
+                />
+            </div>
 
-          <main>
-            {children}
-          </main>
-      </PostHogProvider>
+            <main>
+              {children}
+            </main>
+        </PostHogProvider>
+      </ClerkProvider>
       </body>
     </html>
   );
