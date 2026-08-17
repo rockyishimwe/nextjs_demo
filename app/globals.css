@@ -257,4 +257,163 @@
             }
         }
     }
+
+    #create-event {
+        @apply flex w-full flex-col items-start;
+
+        .card {
+            @apply bg-dark-100 border-dark-200 card-shadow flex w-full flex-col gap-6 rounded-[10px] border px-6 py-6;
+        }
+
+        .field {
+            @apply flex flex-col gap-2;
+
+            label {
+                @apply text-light-100 text-sm font-medium;
+            }
+
+            input,
+            textarea,
+            select {
+                @apply text-light-100 bg-dark-200 rounded-[6px] px-5 py-2.5;
+            }
+
+            textarea {
+                @apply min-h-[100px] resize-y;
+            }
+
+            input::placeholder,
+            textarea::placeholder {
+                @apply text-light-200/50;
+            }
+        }
+
+        .chips {
+            @apply flex flex-row flex-wrap gap-2;
+        }
+
+        .chip {
+            @apply border-primary/30 text-primary bg-primary/10 flex flex-row items-center gap-2 rounded-full border px-3 py-1 text-sm;
+
+            button {
+                @apply text-primary hover:text-primary/60 cursor-pointer text-base leading-none;
+            }
+        }
+
+        .agenda-list {
+            @apply flex flex-col gap-2;
+
+            li {
+                @apply text-light-100 flex flex-row items-center justify-between gap-3 border-b border-border-dark py-2 text-base;
+
+                button {
+                    @apply text-light-200 hover:text-light-100 cursor-pointer text-xl leading-none;
+                }
+            }
+        }
+
+        button.add {
+            @apply border-primary/40 text-primary hover:bg-primary/10 cursor-pointer rounded-[6px] border px-4 py-2.5 text-sm font-medium;
+        }
+
+        button.submit {
+            @apply bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 py-3 text-lg font-semibold text-black;
+        }
+
+        button.submit:disabled {
+            @apply cursor-not-allowed opacity-60;
+        }
+
+        .error {
+            @apply border-destructive/30 text-destructive bg-destructive/10 w-full rounded-[6px] border px-4 py-3 text-sm;
+        }
+
+        .success {
+            @apply border-primary/30 text-primary bg-primary/10 flex w-full flex-col gap-2 rounded-[10px] border px-6 py-6;
+        }
+    }
+
+    #admin {
+        @apply flex w-full flex-col gap-8;
+
+        .header {
+            @apply flex w-full flex-row items-center justify-between gap-6 max-sm:flex-col max-sm:items-start;
+
+            h1 {
+                @apply max-sm:text-4xl;
+            }
+
+            .add-new {
+                @apply bg-primary hover:bg-primary/90 w-full cursor-pointer rounded-[8px] px-5 py-2.5 text-center text-base font-semibold text-black sm:w-auto;
+            }
+        }
+
+        .table-wrap {
+            @apply overflow-x-auto rounded-[10px] border border-border-dark bg-[#121c24]/80;
+        }
+
+        table {
+            @apply w-full min-w-[680px] border-collapse text-left;
+
+            thead {
+                th {
+                    @apply bg-[#0d161a] text-light-100 px-5 py-4 text-sm font-semibold uppercase tracking-wide max-sm:px-3 max-sm:py-3 max-sm:text-xs;
+                }
+            }
+
+            tbody {
+                tr {
+                    @apply border-border-dark/60 border-t;
+
+                    &:hover {
+                        @apply bg-dark-200/40;
+                    }
+
+                    td {
+                        @apply text-light-100 px-5 py-4 text-base max-sm:px-3 max-sm:py-3 max-sm:text-sm;
+
+                        .event-cell {
+                            @apply flex flex-row items-center gap-3;
+
+                            .thumb {
+                                @apply relative h-12 w-12 shrink-0 overflow-hidden rounded-md max-sm:h-10 max-sm:w-10;
+                            }
+                        }
+
+                        .actions {
+                            @apply flex flex-row items-center gap-4 max-sm:gap-2;
+
+                            .action-edit {
+                                @apply text-emerald-400 hover:text-emerald-300 font-medium;
+                            }
+
+                            .action-delete {
+                                @apply text-rose-400 hover:text-rose-300 cursor-pointer font-medium;
+                            }
+                        }
+
+                        .empty {
+                            @apply text-light-200 text-center;
+                        }
+                    }
+                }
+            }
+        }
+
+        .pagination {
+            @apply flex w-full flex-row items-center justify-between gap-3;
+
+            .page-btn {
+                @apply border-border-dark bg-dark-200 rounded-[8px] border px-4 py-2 text-sm text-white;
+            }
+
+            .page-btn.disabled {
+                @apply cursor-not-allowed opacity-50;
+            }
+
+            .page-indicator {
+                @apply text-light-100 text-sm;
+            }
+        }
+    }
 }

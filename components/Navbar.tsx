@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Route } from "next";
 
 const Navbar = () => {
     return (
@@ -13,8 +14,8 @@ const Navbar = () => {
 
                 <ul>
                     <li><Link href="/">Home</Link></li>
-                    <li><Link href="/">Events</Link></li>
-                    <li><Link href="/">Create Event</Link></li>
+                    <li><Link href={"/events" as Route}>Events</Link></li>
+                    <li><Link href={"/admin/create-event" as Route}>Create Event</Link></li>
                 </ul>
             </nav>
         </header>
