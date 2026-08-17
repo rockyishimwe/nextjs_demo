@@ -10,7 +10,9 @@ const Page = async () => {
 
     try {
         await connectDB();
-        events = await Event.find().sort({ createdAt: -1 });
+        // Convert Mongoose documents to plain objects: spreading a document
+        // directly ({...event}) does not include its schema fields.
+        events = (await Event.find().sort({ createdAt: -1 })).map((event) => event.toObject());
     } catch (error) {
         console.error("Failed to fetch events:", error);
     }
