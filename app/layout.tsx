@@ -3,6 +3,7 @@ import { Schibsted_Grotesk, Martian_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Suspense } from "react";
+import { Toaster } from "sonner";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -26,6 +27,11 @@ const martianMono = Martian_Mono({
 export const metadata: Metadata = {
   title: "DevEvent",
   description: "The Hub for Every Dev Event You Mustn't Miss",
+  openGraph: {
+    title: "DevEvent",
+    description: "The Hub for Every Dev Event You Mustn't Miss",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -44,6 +50,7 @@ export default function RootLayout({
             <PostHogPageView />
           </Suspense>
           <Navbar />
+          <Toaster position="top-right" richColors />
 
             <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
                 <LightRays
