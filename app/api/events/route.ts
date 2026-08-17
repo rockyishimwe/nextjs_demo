@@ -11,6 +11,12 @@ const RATE_LIMIT_MAX_GET = 30; // 30 GET requests per minute
 
 // ─── Cloudinary config validation ────────────────────────────────────────────
 function validateCloudinaryConfig(): void {
+  // CLOUDINARY_URL is the standard single-variable config; cloudinary v2
+  // reads it automatically, so it counts as configured.
+  if (process.env.CLOUDINARY_URL && process.env.CLOUDINARY_URL.trim() !== "") {
+    return;
+  }
+
   const required = [
     "CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",

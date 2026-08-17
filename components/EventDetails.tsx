@@ -1,13 +1,12 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { IEvent } from "@/app/database/event.model";
+import Event, { IEvent } from "@/app/database/event.model";
+import Booking from "@/app/database/booking.model";
+import connectDB from "@/lib/mongodb";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
 import Image from "next/image";
 import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
-import { cacheLife } from "next/cache";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailItem = ({
   icon,
@@ -45,34 +44,22 @@ const EventTags = ({ tags }: { tags: string[] }) => (
   </div>
 );
 
-const EventDetails = async ({ params }: { params: Promise<string> }) => {
-  "use cache";
-  cacheLife("hours");
-  const slug = await params;
+const EventDetails = async ({ slug }: { slug: string }) => {
+  let event: IEvent | null = null;
+  let bookingsCount = 0;
 
-  let event;
   try {
-    const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
-      next: { revalidate: 60 },
-    });
+    await connectDB();
+    event = await Event.findOne({ slug });
 
-    if (!request.ok) {
-      if (request.status === 404) {
-        return notFound();
-      }
-      throw new Error(`Failed to fetch event: ${request.statusText}`);
-    }
-
-    const response = await request.json();
-    event = response.event;
-
-    if (!event) {
-      return notFound();
+    if (event) {
+      bookingsCount = await Booking.countDocuments({ eventId: event._id });
     }
   } catch (error) {
     console.error("Error fetching event:", error);
-    return notFound();
   }
+
+  if (!event) return notFound();
 
   const {
     description,
@@ -89,8 +76,6 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
   } = event;
 
   if (!description) return notFound();
-
-  const bookings = 10;
 
   const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
@@ -149,15 +134,15 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
         <aside className="booking">
           <div className="signup-card">
             <h2>Book Your Spot</h2>
-            {bookings > 0 ? (
+            {bookingsCount > 0 ? (
               <p className="text-sm">
-                Join {bookings} people who have already booked their spot!
+                Join {bookingsCount} people who have already booked their spot!
               </p>
             ) : (
               <p className="text-sm">Be the first to book your spot!</p>
             )}
 
-            <BookEvent eventId={event._id} slug={event.slug} />
+            <BookEvent eventId={event._id.toString()} slug={event.slug} />
           </div>
         </aside>
       </div>
