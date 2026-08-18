@@ -1,13 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import type { Route } from "next";
 import { createBooking } from "@/lib/actions/booking.actions";
 import posthog from "posthog-js";
 import { toast } from "sonner";
 
-const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
+type BookEventProps = {
+  eventId: string;
+  slug: string;
+  capacity?: number;
+  bookingsCount: number;
+};
+
+const BookEvent = ({ eventId, slug, capacity, bookingsCount }: BookEventProps) => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+
+  const isFullyBooked =
+    typeof capacity === "number" && bookingsCount >= capacity;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,30 +36,56 @@ const BookEvent = ({ eventId, slug }: { eventId: string; slug: string }) => {
     }
   };
 
+  if (isFullyBooked && !submitted) {
+    return (
+      <div className="mt-4 text-center">
+        <p className="text-sm font-medium text-red-400">
+          This event is fully booked.
+        </p>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="mt-4 text-center space-y-3">
+        <p className="text-sm font-medium text-green-400">
+          Thank you for signing up!
+        </p>
+        <p className="text-xs text-light-100">
+          A confirmation email has been sent to <strong>{email}</strong>.
+        </p>
+        <Link
+          href={`/events/${slug}` as Route}
+          className="text-xs underline text-primary"
+        >
+          View event details
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div id="book-event">
-      {submitted ? (
-        <p className="text-sm text-green-400 font-medium">Thank you for signing up!</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              id="email"
-              placeholder="Enter your email address"
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="email">Email Address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            id="email"
+            placeholder="Enter your email address"
+            required
+          />
+        </div>
 
-          <button type="submit" className="button-submit">
-            Submit
-          </button>
-        </form>
-      )}
+        <button type="submit" className="button-submit">
+          Submit
+        </button>
+      </form>
     </div>
   );
 };
+
 export default BookEvent;

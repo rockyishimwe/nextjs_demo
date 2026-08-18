@@ -285,6 +285,24 @@ async function seed() {
     }
   }
 
+  // Backfill bookedCount from existing Booking documents
+  const Booking = mongoose.model(
+    "Booking",
+    new mongoose.Schema(
+      { eventId: mongoose.Schema.Types.ObjectId },
+      { timestamps: true }
+    )
+  );
+
+  const counts = await Booking.aggregate([
+    { $group: { _id: "$eventId", count: { $sum: 1 } } },
+  ]);
+
+  for (const { _id, count } of counts) {
+    await Event.findByIdAndUpdate(_id, { bookedCount: count });
+  }
+  console.log(`Backfilled bookedCount for ${counts.length} events`);
+
   const total = await Event.countDocuments();
   console.log(`\nDone. ${created} created, ${updated} updated. Total events in DB: ${total}`);
 

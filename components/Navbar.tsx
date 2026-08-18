@@ -17,6 +17,9 @@ const Navbar = () => {
           <li>
             <Link href="/">Home</Link>
           </li>
+          <li>
+            <Link href={"/events" as Route}>Events</Link>
+          </li>
 
           <Show when="signed-out">
             <li>
@@ -33,7 +36,7 @@ const Navbar = () => {
 
           <Show when="signed-in">
             <li>
-              <Link href={"/events" as Route}>Events</Link>
+              <Link href={"/admin" as Route}>Manage Events</Link>
             </li>
             <li>
               <Link href={"/admin/create-event" as Route}>Create Event</Link>

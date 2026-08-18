@@ -1,6 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin";
-
 import connectDB from "@/lib/mongodb";
 import Event from "@/app/database/event.model";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
@@ -11,103 +10,59 @@ import {
   validateEventFormData,
   uploadEventImageToCloudinary,
 } from "@/lib/event-form-validation";
+import { apiOk, apiError } from "@/lib/api-errors";
+import { revalidatePath } from "next/cache";
 
-// Define route params type for type safety
 type RouteParams = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
-/**
- * GET /api/events/[slug]
- * Fetches a single events by its slug
- */
-export async function GET(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
-  try {
-    // Connect to database
-    await connectDB();
+// ─── GET /api/events/[slug] ─────────────────────────────────────────────────
 
-    // Await and extract slug from params
+export async function GET(_req: NextRequest, { params }: RouteParams) {
+  try {
+    await connectDB();
     const { slug } = await params;
 
-    // Validate slug parameter
     if (!slug || typeof slug !== "string" || slug.trim() === "") {
-      return NextResponse.json({ message: "Invalid or missing slug parameter" }, { status: 400 });
+      return apiError("Invalid or missing slug parameter", 400);
     }
 
-    // Sanitize slug (remove any potential malicious input)
     const sanitizedSlug = slug.trim().toLowerCase();
-
-    // Query events by slug
     const event = await Event.findOne({ slug: sanitizedSlug }).lean();
 
-    // Handle events not found
     if (!event) {
-      return NextResponse.json(
-        { message: `Event with slug '${sanitizedSlug}' not found` },
-        { status: 404 },
-      );
+      return apiError(`Event not found`, 404);
     }
 
-    // Return successful response with events data
-    return NextResponse.json({ message: "Event fetched successfully", event }, { status: 200 });
+    return apiOk(
+      { message: "Event fetched successfully", event },
+      200,
+      { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+    );
   } catch (error) {
-    // Log error for debugging (only in development)
-    if (process.env.NODE_ENV === "development") {
-      console.error("Error fetching events by slug:", error);
+    if (error instanceof Error && error.message.includes("MONGODB_URI")) {
+      return apiError("Database configuration error", 500);
     }
-
-    // Handle specific error types
-    if (error instanceof Error) {
-      // Handle database connection errors
-      if (error.message.includes("MONGODB_URI")) {
-        return NextResponse.json({ message: "Database configuration error" }, { status: 500 });
-      }
-
-      return NextResponse.json(
-        { message: "Failed to fetch events. Please try again later." },
-        { status: 500 },
-      );
-    }
-
-    // Handle unknown errors
-    return NextResponse.json({ message: "An unexpected error occurred" }, { status: 500 });
+    return apiError("Failed to fetch events. Please try again later.", 500, error);
   }
 }
 
-// ─── PATCH /api/events/[slug] ────────────────────────────────────────────────
-// Updates an event from a multipart form. The image is optional: when no new
-// file is uploaded, the existing image URL is kept.
+// ─── PATCH /api/events/[slug] ───────────────────────────────────────────────
 
-export async function PATCH(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
-  // Admin only
+export async function PATCH(req: NextRequest, { params }: RouteParams) {
   if (!(await isAdmin())) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
 
-  // Rate limit check
   const ip = getClientIp(req);
   const rateCheck = rateLimit(`patch:${ip}`, 10, 60_000);
   if (!rateCheck.allowed) {
-    return NextResponse.json(
-      {
-        message: "Too many requests. Please try again later.",
-        retryAfterSeconds: rateCheck.resetInSeconds,
-      },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(rateCheck.resetInSeconds),
-          "X-RateLimit-Remaining": "0",
-        },
-      },
-    );
+    return apiError("Too many requests. Please try again later.", 429);
   }
 
   try {
     validateCloudinaryConfig();
-
     await connectDB();
 
     const { slug } = await params;
@@ -115,17 +70,13 @@ export async function PATCH(req: NextRequest, { params }: RouteParams): Promise<
 
     const existing = await Event.findOne({ slug: sanitizedSlug });
     if (!existing) {
-      return NextResponse.json(
-        { message: `Event with slug '${sanitizedSlug}' not found` },
-        { status: 404 },
-      );
+      return apiError("Event not found", 404);
     }
 
     const formData = await req.formData();
     const fields = validateEventFormData(formData);
     const capacity = parseCapacity(formData);
 
-    // Keep the existing image unless a new file was uploaded
     let image = existing.image;
     const file = formData.get("image") as File | null;
     if (file && file.size > 0) {
@@ -147,27 +98,21 @@ export async function PATCH(req: NextRequest, { params }: RouteParams): Promise<
     existing.agenda = fields.agenda;
     existing.capacity = capacity;
 
-    // The pre-save hook regenerates the slug if the title changed
     await existing.save();
 
-    return NextResponse.json(
-      { message: "Event updated successfully", event: existing },
-      { status: 200 },
-    );
+    revalidatePath("/");
+    revalidatePath("/events");
+    revalidatePath(`/events/${sanitizedSlug}`);
+    revalidatePath("/admin");
+
+    return apiOk({ message: "Event updated successfully", event: existing });
   } catch (e) {
-    console.error("Event update failed:", e);
-
     if (e instanceof ValidationError) {
-      return NextResponse.json({ message: e.message }, { status: 400 });
+      return apiError(e.message, 400);
     }
-
     if (e instanceof Error && e.message.startsWith("Cloudinary")) {
-      return NextResponse.json({ message: e.message }, { status: 400 });
+      return apiError(e.message, 400);
     }
-
-    return NextResponse.json(
-      { message: "Event update failed. Please try again later." },
-      { status: 500 },
-    );
+    return apiError("Event update failed. Please try again later.", 500, e);
   }
 }

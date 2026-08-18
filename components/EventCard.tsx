@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Route } from "next";
+import { formatDate, formatTime } from "@/lib/format";
 
 interface Props {
   title: string;
@@ -35,11 +36,11 @@ const EventCard = ({ title, image, slug, location, date, time }: Props) => {
       <div className="datetime">
         <div>
           <img src="/icons/calendar.svg" alt="date" width={14} height={14} />
-          <p>{date}</p>
+          <p>{formatDate(date)}</p>
         </div>
         <div>
           <img src="/icons/clock.svg" alt="time" width={14} height={14} />
-          <p>{time}</p>
+          <p>{formatTime(time)}</p>
         </div>
       </div>
     </Link>

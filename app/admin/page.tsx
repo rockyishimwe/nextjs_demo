@@ -19,13 +19,12 @@ const AdminPage = async ({
   const page = Math.max(1, Number(pageParam) || 1);
   const q = (qParam ?? "").trim();
 
-  const { events, total, bookingMap } = await getAdminEvents(page, PAGE_SIZE, q);
+  const { events, total } = await getAdminEvents(page, PAGE_SIZE, q);
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <EventManagementTable
       events={events}
-      bookingMap={bookingMap}
       page={page}
       totalPages={totalPages}
       paginationPath="/admin"

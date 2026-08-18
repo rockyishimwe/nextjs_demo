@@ -1,14 +1,22 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import Event, { IEvent } from "@/app/database/event.model";
-import Booking from "@/app/database/booking.model";
 import connectDB from "@/lib/mongodb";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import { formatDate, formatTime } from "@/lib/format";
 import Image from "next/image";
 import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
 
-const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
+const EventDetailItem = ({
+  icon,
+  alt,
+  label,
+}: {
+  icon: string;
+  alt: string;
+  label: string;
+}) => (
   <div className="flex-row-gap-2 items-center">
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={icon} alt={alt} width={17} height={17} />
@@ -46,7 +54,7 @@ const EventDetails = async ({ slug }: { slug: string }) => {
     event = await Event.findOne({ slug });
 
     if (event) {
-      bookingsCount = await Booking.countDocuments({ eventId: event._id });
+      bookingsCount = event.bookedCount ?? 0;
     }
   } catch (error) {
     console.error("Error fetching event:", error);
@@ -66,6 +74,7 @@ const EventDetails = async ({ slug }: { slug: string }) => {
     audience,
     tags,
     organizer,
+    capacity,
   } = event;
 
   if (!description) return notFound();
@@ -82,7 +91,13 @@ const EventDetails = async ({ slug }: { slug: string }) => {
       <div className="details">
         {/*    Left Side - Event Content */}
         <div className="content">
-          <Image src={image} alt="Event Banner" width={800} height={800} className="banner" />
+          <Image
+            src={image}
+            alt="Event Banner"
+            width={800}
+            height={800}
+            className="banner"
+          />
 
           <section className="flex-col-gap-2">
             <h2>Overview</h2>
@@ -92,11 +107,23 @@ const EventDetails = async ({ slug }: { slug: string }) => {
           <section className="flex-col-gap-2">
             <h2>Event Details</h2>
 
-            <EventDetailItem icon="/icons/calendar.svg" alt="calendar" label={date} />
-            <EventDetailItem icon="/icons/clock.svg" alt="clock" label={time} />
+            <EventDetailItem
+              icon="/icons/calendar.svg"
+              alt="calendar"
+              label={formatDate(date)}
+            />
+            <EventDetailItem
+              icon="/icons/clock.svg"
+              alt="clock"
+              label={formatTime(time)}
+            />
             <EventDetailItem icon="/icons/pin.svg" alt="pin" label={location} />
             <EventDetailItem icon="/icons/mode.svg" alt="mode" label={mode} />
-            <EventDetailItem icon="/icons/audience.svg" alt="audience" label={audience} />
+            <EventDetailItem
+              icon="/icons/audience.svg"
+              alt="audience"
+              label={audience}
+            />
           </section>
 
           <EventAgenda agendaItems={agenda} />
@@ -121,7 +148,12 @@ const EventDetails = async ({ slug }: { slug: string }) => {
               <p className="text-sm">Be the first to book your spot!</p>
             )}
 
-            <BookEvent eventId={event._id.toString()} slug={event.slug} />
+            <BookEvent
+              eventId={event._id.toString()}
+              slug={event.slug}
+              capacity={capacity}
+              bookingsCount={bookingsCount}
+            />
           </div>
         </aside>
       </div>
@@ -138,4 +170,5 @@ const EventDetails = async ({ slug }: { slug: string }) => {
     </section>
   );
 };
+
 export default EventDetails;

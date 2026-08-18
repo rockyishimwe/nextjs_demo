@@ -4,21 +4,27 @@ import Event from "@/app/database/event.model";
 import Booking from "@/app/database/booking.model";
 import connectDB from "../mongodb";
 import type { IEvent } from "@/app/database";
+import { cacheEvents, cacheEventBySlug } from "../cache";
+import { revalidatePath } from "next/cache";
 
 export const getSimilarEventsBySlug = async (slug: string) => {
-  try {
-    await connectDB();
-    const event = await Event.findOne({ slug });
+  const cached = cacheEventBySlug(async () => {
+    try {
+      await connectDB();
+      const event = await Event.findOne({ slug });
 
-    if (!event) return [];
+      if (!event) return [];
 
-    return await Event.find({
-      _id: { $ne: event._id },
-      tags: { $in: event.tags },
-    }).lean();
-  } catch {
-    return [];
-  }
+      return await Event.find({
+        _id: { $ne: event._id },
+        tags: { $in: event.tags },
+      }).lean();
+    } catch {
+      return [];
+    }
+  }, slug);
+
+  return cached();
 };
 
 export const deleteEvent = async (slug: string) => {
@@ -39,11 +45,39 @@ export const deleteEvent = async (slug: string) => {
     await Booking.deleteMany({ eventId: event._id });
     await Event.deleteOne({ _id: event._id });
 
+    // Invalidate cached public data
+    revalidatePath("/");
+    revalidatePath("/events");
+    revalidatePath(`/events/${slug}`);
+
     return { success: true };
   } catch (e) {
     console.error("delete event failed", e);
     return { success: false, message: "Failed to delete event" };
   }
+};
+
+export const getPublicEvents = async (page: number, pageSize: number) => {
+  const cached = cacheEvents(async () => {
+    try {
+      await connectDB();
+      const skip = (page - 1) * pageSize;
+      const [events, total] = await Promise.all([
+        Event.find()
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(pageSize)
+          .lean() as unknown as Promise<IEvent[]>,
+        Event.countDocuments(),
+      ]);
+      return { events, total };
+    } catch (e) {
+      console.error("Failed to load public events:", e);
+      return { events: [] as IEvent[], total: 0 };
+    }
+  });
+
+  return cached();
 };
 
 export const getAdminEvents = async (page: number, pageSize: number, q = "") => {
@@ -71,28 +105,18 @@ export const getAdminEvents = async (page: number, pageSize: number, q = "") => 
       ];
     }
 
-    const [events, total, bookings] = await Promise.all([
+    const [events, total] = await Promise.all([
       Event.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(pageSize)
         .lean() as unknown as Promise<IEvent[]>,
       Event.countDocuments(filter),
-      Booking.aggregate<{ _id: unknown; count: number }>([
-        { $group: { _id: "$eventId", count: { $sum: 1 } } },
-      ]),
     ]);
 
-    const bookingMap = new Map<string, number>();
-    bookings.forEach((b) => bookingMap.set(String(b._id), b.count));
-
-    return { events, total, bookingMap };
+    return { events, total };
   } catch (e) {
     console.error("Failed to load events:", e);
-    return {
-      events: [] as IEvent[],
-      total: 0,
-      bookingMap: new Map<string, number>(),
-    };
+    return { events: [] as IEvent[], total: 0 };
   }
 };

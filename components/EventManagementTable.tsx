@@ -3,55 +3,13 @@ import Image from "next/image";
 import type { Route } from "next";
 import type { IEvent } from "@/app/database";
 import AdminDeleteButton from "./AdminDeleteButton";
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-// "2026-09-15" -> "15th September 2026"
-function formatDate(iso: string): string {
-  const [y, m, d] = iso.split("-").map(Number);
-  if (!y || !m || !d) return iso;
-
-  const suffix =
-    d % 10 === 1 && d !== 11
-      ? "st"
-      : d % 10 === 2 && d !== 12
-        ? "nd"
-        : d % 10 === 3 && d !== 13
-          ? "rd"
-          : "th";
-
-  return `${d}${suffix} ${MONTHS[m - 1]} ${y}`;
-}
-
-// "14:25" -> "2:25pm"
-function formatTime(time: string): string {
-  const [h, m] = time.split(":").map(Number);
-  if (Number.isNaN(h) || Number.isNaN(m)) return time;
-
-  const period = h >= 12 ? "pm" : "am";
-  const hour12 = h % 12 === 0 ? 12 : h % 12;
-  return `${hour12}:${String(m).padStart(2, "0")}${period}`;
-}
+import { formatDate, formatTime } from "@/lib/format";
 
 type EventManagementTableProps = {
   events: IEvent[];
-  bookingMap: Map<string, number>;
   page: number;
   totalPages: number;
-  /** Path used for the pagination links (e.g. "/admin" or "/events"). */
+  /** Path used for the pagination links (e.g. "/admin"). */
   paginationPath: string;
   /** Current search query, if any. */
   search?: string;
@@ -59,7 +17,6 @@ type EventManagementTableProps = {
 
 const EventManagementTable = ({
   events,
-  bookingMap,
   page,
   totalPages,
   paginationPath,
@@ -107,7 +64,7 @@ const EventManagementTable = ({
             )}
 
             {events.map((event) => {
-              const booked = bookingMap.get(String(event._id)) ?? 0;
+              const booked = event.bookedCount ?? 0;
               const capacity = event.capacity;
               const isFull = typeof capacity === "number" && booked >= capacity;
 

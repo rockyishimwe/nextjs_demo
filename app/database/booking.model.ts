@@ -55,11 +55,11 @@ BookingSchema.pre("save", async function () {
     }
   }
 });
-//create index on eventId for faster queries
-BookingSchema.index({ eventId: 1 });
-//create compound index for common queries (events bookings by date)
+// Prevent duplicate bookings for the same event + email
+BookingSchema.index({ eventId: 1, email: 1 }, { unique: true });
+// Compound index for common queries (event bookings by date)
 BookingSchema.index({ eventId: 1, createdAt: -1 });
-//create index on email for user booking lookups
+// Index on email for user booking lookups
 BookingSchema.index({ email: 1 });
 
 const Booking = models.Booking || model<IBooking>("Booking", BookingSchema);

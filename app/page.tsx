@@ -2,20 +2,26 @@ import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import Event, { IEvent } from "@/app/database/event.model";
 import connectDB from "@/lib/mongodb";
+import { unstable_cache } from "next/cache";
+
+const getHomeEvents = unstable_cache(
+  async () => {
+    try {
+      await connectDB();
+      return (await Event.find().sort({ createdAt: -1 })).map((event) => event.toObject());
+    } catch (error) {
+      console.error("Failed to fetch events:", error);
+      return [];
+    }
+  },
+  ["home-events"],
+  { revalidate: 60, tags: ["events"] },
+);
 
 export const dynamic = "force-dynamic";
 
 const Page = async () => {
-  let events: IEvent[] = [];
-
-  try {
-    await connectDB();
-    // Convert Mongoose documents to plain objects: spreading a document
-    // directly ({...event}) does not include its schema fields.
-    events = (await Event.find().sort({ createdAt: -1 })).map((event) => event.toObject());
-  } catch (error) {
-    console.error("Failed to fetch events:", error);
-  }
+  const events: IEvent[] = await getHomeEvents();
 
   return (
     <section>
