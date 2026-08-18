@@ -17,11 +17,7 @@ export function apiOk(
  * Logs the real error server-side (optional), returns a safe generic message to the client.
  * Shape: { message }
  */
-export function apiError(
-  message: string,
-  status = 500,
-  logError?: unknown,
-) {
+export function apiError(message: string, status = 500, logError?: unknown) {
   if (logError !== undefined) {
     console.error(`[${status}] ${message}:`, logError);
   }

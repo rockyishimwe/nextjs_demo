@@ -13,11 +13,7 @@ export const metadata: Metadata = {
 
 const PAGE_SIZE = 12;
 
-const EventsPage = async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) => {
+const EventsPage = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
 
@@ -32,9 +28,7 @@ const EventsPage = async ({
       </p>
 
       {events.length === 0 ? (
-        <p className="text-center mt-20 text-light-100">
-          No events yet. Check back soon!
-        </p>
+        <p className="text-center mt-20 text-light-100">No events yet. Check back soon!</p>
       ) : (
         <>
           <ul className="events mt-12">
@@ -55,10 +49,7 @@ const EventsPage = async ({
           {totalPages > 1 && (
             <div className="pagination mt-12 justify-center">
               {page > 1 ? (
-                <Link
-                  href={`/events?page=${page - 1}` as Route}
-                  className="page-btn"
-                >
+                <Link href={`/events?page=${page - 1}` as Route} className="page-btn">
                   Previous
                 </Link>
               ) : (
@@ -70,10 +61,7 @@ const EventsPage = async ({
               </span>
 
               {page < totalPages ? (
-                <Link
-                  href={`/events?page=${page + 1}` as Route}
-                  className="page-btn"
-                >
+                <Link href={`/events?page=${page + 1}` as Route} className="page-btn">
                   Next
                 </Link>
               ) : (

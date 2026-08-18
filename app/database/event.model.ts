@@ -15,9 +15,10 @@ export interface IEvent extends Document {
   audience: string;
   agenda: string[];
   organizer: string;
-  tags: string[];    capacity?: number;
-    bookedCount: number;
-    createdAt: Date;
+  tags: string[];
+  capacity?: number;
+  bookedCount: number;
+  createdAt: Date;
   updatedAt: Date;
 }
 

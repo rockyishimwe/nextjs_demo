@@ -90,11 +90,9 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const events = await Event.find().sort({ createdAt: -1 });
-    return apiOk(
-      { message: "Events fetched successfully", events },
-      200,
-      { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
-    );
+    return apiOk({ message: "Events fetched successfully", events }, 200, {
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+    });
   } catch (e) {
     return apiError("Event fetching failed. Please try again later.", 500, e);
   }

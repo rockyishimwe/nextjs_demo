@@ -61,7 +61,12 @@ export const createBooking = async ({
       await Booking.create({ eventId, slug, email: normalizedEmail });
     } catch (err: unknown) {
       // E11000 = duplicate key error — this email already booked this event
-      if (err && typeof err === "object" && "code" in err && (err as { code: number }).code === 11000) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        (err as { code: number }).code === 11000
+      ) {
         // Roll back the bookedCount increment
         await Event.findByIdAndUpdate(eventId, { $inc: { bookedCount: -1 } });
         return { success: false, message: "You've already booked this event." };

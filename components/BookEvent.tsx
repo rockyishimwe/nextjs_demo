@@ -18,8 +18,7 @@ const BookEvent = ({ eventId, slug, capacity, bookingsCount }: BookEventProps) =
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const isFullyBooked =
-    typeof capacity === "number" && bookingsCount >= capacity;
+  const isFullyBooked = typeof capacity === "number" && bookingsCount >= capacity;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,9 +38,7 @@ const BookEvent = ({ eventId, slug, capacity, bookingsCount }: BookEventProps) =
   if (isFullyBooked && !submitted) {
     return (
       <div className="mt-4 text-center">
-        <p className="text-sm font-medium text-red-400">
-          This event is fully booked.
-        </p>
+        <p className="text-sm font-medium text-red-400">This event is fully booked.</p>
       </div>
     );
   }
@@ -49,16 +46,11 @@ const BookEvent = ({ eventId, slug, capacity, bookingsCount }: BookEventProps) =
   if (submitted) {
     return (
       <div className="mt-4 text-center space-y-3">
-        <p className="text-sm font-medium text-green-400">
-          Thank you for signing up!
-        </p>
+        <p className="text-sm font-medium text-green-400">Thank you for signing up!</p>
         <p className="text-xs text-light-100">
           A confirmation email has been sent to <strong>{email}</strong>.
         </p>
-        <Link
-          href={`/events/${slug}` as Route}
-          className="text-xs underline text-primary"
-        >
+        <Link href={`/events/${slug}` as Route} className="text-xs underline text-primary">
           View event details
         </Link>
       </div>

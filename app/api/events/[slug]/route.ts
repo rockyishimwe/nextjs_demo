@@ -35,11 +35,9 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
       return apiError(`Event not found`, 404);
     }
 
-    return apiOk(
-      { message: "Event fetched successfully", event },
-      200,
-      { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
-    );
+    return apiOk({ message: "Event fetched successfully", event }, 200, {
+      "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+    });
   } catch (error) {
     if (error instanceof Error && error.message.includes("MONGODB_URI")) {
       return apiError("Database configuration error", 500);
