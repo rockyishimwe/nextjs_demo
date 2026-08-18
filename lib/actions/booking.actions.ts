@@ -3,6 +3,7 @@ import Booking from "@/app/database/booking.model";
 import Event from "@/app/database/event.model";
 import connectDB from "../mongodb";
 import { rateLimit } from "../rateLimiter";
+import { sendBookingConfirmation } from "../email";
 
 export const createBooking = async ({
   eventId,
@@ -34,7 +35,11 @@ export const createBooking = async ({
 
     // Enforce capacity when the event has one
     const event = await Event.findById(eventId);
-    if (event?.capacity) {
+    if (!event) {
+      return { success: false, message: "Event not found." };
+    }
+
+    if (event.capacity) {
       const count = await Booking.countDocuments({ eventId });
       if (count >= event.capacity) {
         return { success: false, message: "This event is fully booked." };
@@ -42,6 +47,16 @@ export const createBooking = async ({
     }
 
     await Booking.create({ eventId, slug, email: email.trim().toLowerCase() });
+
+    // Send confirmation email asynchronously
+    sendBookingConfirmation({
+      email: email.trim().toLowerCase(),
+      eventTitle: event.title,
+      date: event.date,
+      time: event.time,
+      venue: event.venue,
+      slug,
+    }).catch((err) => console.error("Async email dispatch failed:", err));
 
     return { success: true };
   } catch (e) {

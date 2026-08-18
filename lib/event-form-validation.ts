@@ -9,15 +9,9 @@ export function validateCloudinaryConfig(): void {
     return;
   }
 
-  const required = [
-    "CLOUDINARY_CLOUD_NAME",
-    "CLOUDINARY_API_KEY",
-    "CLOUDINARY_API_SECRET",
-  ];
+  const required = ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"];
 
-  const missing = required.filter(
-    (key) => !process.env[key] || process.env[key]!.trim() === "",
-  );
+  const missing = required.filter((key) => !process.env[key] || process.env[key]!.trim() === "");
 
   if (missing.length > 0) {
     throw new Error(
@@ -104,9 +98,7 @@ export function validateEventFormData(formData: FormData): ValidatedFields {
   // Validate mode enum
   const validModes = ["online", "offline", "hybrid"];
   if (!validModes.includes(fields.mode.toLowerCase())) {
-    throw new ValidationError(
-      `"mode" must be one of: ${validModes.join(", ")}`,
-    );
+    throw new ValidationError(`"mode" must be one of: ${validModes.join(", ")}`);
   }
 
   // Parse JSON array fields
@@ -138,25 +130,18 @@ export function parseCapacity(formData: FormData): number | undefined {
 
 // ─── Image upload ─────────────────────────────────────────────────────────────
 
-export async function uploadEventImageToCloudinary(
-  file: File,
-): Promise<string> {
+export async function uploadEventImageToCloudinary(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  const uploadResult = await new Promise<{ secure_url: string }>(
-    (resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          { resource_type: "image", folder: "DevEvent" },
-          (error, results) => {
-            if (error) return reject(error);
-            resolve(results as { secure_url: string });
-          },
-        )
-        .end(buffer);
-    },
-  );
+  const uploadResult = await new Promise<{ secure_url: string }>((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ resource_type: "image", folder: "DevEvent" }, (error, results) => {
+        if (error) return reject(error);
+        resolve(results as { secure_url: string });
+      })
+      .end(buffer);
+  });
 
   return uploadResult.secure_url;
 }

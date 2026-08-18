@@ -46,11 +46,7 @@ export const deleteEvent = async (slug: string) => {
   }
 };
 
-export const getAdminEvents = async (
-  page: number,
-  pageSize: number,
-  q = "",
-) => {
+export const getAdminEvents = async (page: number, pageSize: number, q = "") => {
   try {
     if (!(await isAdmin())) {
       return {

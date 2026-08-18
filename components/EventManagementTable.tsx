@@ -109,8 +109,7 @@ const EventManagementTable = ({
             {events.map((event) => {
               const booked = bookingMap.get(String(event._id)) ?? 0;
               const capacity = event.capacity;
-              const isFull =
-                typeof capacity === "number" && booked >= capacity;
+              const isFull = typeof capacity === "number" && booked >= capacity;
 
               return (
                 <tr key={event.slug}>
@@ -143,16 +142,10 @@ const EventManagementTable = ({
                   </td>
                   <td>
                     <div className="actions">
-                      <Link
-                        href={`/admin/bookings/${event.slug}` as Route}
-                        className="action-view"
-                      >
+                      <Link href={`/admin/bookings/${event.slug}` as Route} className="action-view">
                         View
                       </Link>
-                      <Link
-                        href={`/admin/edit/${event.slug}` as Route}
-                        className="action-edit"
-                      >
+                      <Link href={`/admin/edit/${event.slug}` as Route} className="action-edit">
                         Edit
                       </Link>
                       <AdminDeleteButton slug={event.slug} title={event.title} />
@@ -168,9 +161,11 @@ const EventManagementTable = ({
       <div className="pagination">
         {page > 1 ? (
           <Link
-            href={`${paginationPath}?page=${page - 1}${
-              search ? `&q=${encodeURIComponent(search)}` : ""
-            }` as Route}
+            href={
+              `${paginationPath}?page=${page - 1}${
+                search ? `&q=${encodeURIComponent(search)}` : ""
+              }` as Route
+            }
             className="page-btn"
           >
             Previous
@@ -185,9 +180,11 @@ const EventManagementTable = ({
 
         {page < totalPages ? (
           <Link
-            href={`${paginationPath}?page=${page + 1}${
-              search ? `&q=${encodeURIComponent(search)}` : ""
-            }` as Route}
+            href={
+              `${paginationPath}?page=${page + 1}${
+                search ? `&q=${encodeURIComponent(search)}` : ""
+              }` as Route
+            }
             className="page-btn"
           >
             Next

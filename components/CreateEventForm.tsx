@@ -121,11 +121,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
 
   const set =
     (key: keyof FormState) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >,
-    ) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleAddTag = () => {
@@ -182,8 +178,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
     const location = form.location.trim() || form.venue;
     const audience = form.audience.trim() || "Everyone";
     const organizer = form.organizer.trim() || "DevEvent Team";
-    const agendaItems =
-      agenda.length > 0 ? agenda : deriveAgenda(form.description);
+    const agendaItems = agenda.length > 0 ? agenda : deriveAgenda(form.description);
 
     const formData = new FormData();
     formData.append("title", form.title);
@@ -232,14 +227,10 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
     return (
       <div className="success" role="status">
         <p className="text-lg font-semibold">
-          &ldquo;{savedEvent.title}&rdquo; {isEditing ? "updated" : "created"}{" "}
-          successfully!
+          &ldquo;{savedEvent.title}&rdquo; {isEditing ? "updated" : "created"} successfully!
         </p>
         <p>
-          <Link
-            href={`/events/${savedEvent.slug}` as Route}
-            className="underline"
-          >
+          <Link href={`/events/${savedEvent.slug}` as Route} className="underline">
             View the event page
           </Link>
         </p>
@@ -248,10 +239,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-2xl flex-col gap-6"
-    >
+    <form onSubmit={handleSubmit} className="flex w-full max-w-2xl flex-col gap-6">
       {error && (
         <div className="error" role="alert">
           {error}
@@ -274,13 +262,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="date">Event Date</label>
         <div className="input-wrap">
-          <img
-            src="/icons/calendar.svg"
-            alt=""
-            width={16}
-            height={16}
-            className="icon"
-          />
+          <img src="/icons/calendar.svg" alt="" width={16} height={16} className="icon" />
           <input
             id="date"
             type="date"
@@ -295,13 +277,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="time">Event Time</label>
         <div className="input-wrap">
-          <img
-            src="/icons/clock.svg"
-            alt=""
-            width={16}
-            height={16}
-            className="icon"
-          />
+          <img src="/icons/clock.svg" alt="" width={16} height={16} className="icon" />
           <input
             id="time"
             type="time"
@@ -316,13 +292,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
       <div className="field">
         <label htmlFor="venue">Event Location</label>
         <div className="input-wrap">
-          <img
-            src="/icons/pin.svg"
-            alt=""
-            width={16}
-            height={16}
-            className="icon"
-          />
+          <img src="/icons/pin.svg" alt="" width={16} height={16} className="icon" />
           <input
             id="venue"
             type="text"
@@ -345,13 +315,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
             <option value="online">Online</option>
             <option value="hybrid">Hybrid</option>
           </select>
-          <img
-            src="/icons/arrow-down.svg"
-            alt=""
-            width={16}
-            height={16}
-            className="chevron"
-          />
+          <img src="/icons/arrow-down.svg" alt="" width={16} height={16} className="chevron" />
         </div>
       </div>
 
@@ -373,9 +337,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
                 alt="Banner preview"
                 className="max-h-[220px] w-full rounded-[8px] object-cover"
               />
-              <span className="text-light-100 text-sm">
-                {image?.name} — click to replace
-              </span>
+              <span className="text-light-100 text-sm">{image?.name} — click to replace</span>
             </>
           ) : initialData?.image && isEditing ? (
             <>
@@ -384,9 +346,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
                 alt="Current banner"
                 className="max-h-[220px] w-full rounded-[8px] object-cover"
               />
-              <span className="text-light-100 text-sm">
-                Click to replace the current banner
-              </span>
+              <span className="text-light-100 text-sm">Click to replace the current banner</span>
             </>
           ) : (
             <>
@@ -531,9 +491,7 @@ const CreateEventForm = ({ initialData, slug }: CreateEventFormProps) => {
                     <button
                       type="button"
                       aria-label={`Remove ${item}`}
-                      onClick={() =>
-                        setAgenda((a) => a.filter((x) => x !== item))
-                      }
+                      onClick={() => setAgenda((a) => a.filter((x) => x !== item))}
                     >
                       &times;
                     </button>

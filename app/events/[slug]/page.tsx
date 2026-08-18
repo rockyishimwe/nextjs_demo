@@ -38,13 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const EventDetailsPage = async ({ params }: Props) => {
-    const { slug } = await params;
-    return (
-        <main>
-            <Suspense fallback={<div>Loading...</div>}>
-                <EventDetails slug={slug} />
-            </Suspense>
-        </main>
-    );
+  const { slug } = await params;
+  return (
+    <main>
+      <Suspense fallback={<div>Loading...</div>}>
+        <EventDetails slug={slug} />
+      </Suspense>
+    </main>
+  );
 };
 export default EventDetailsPage;

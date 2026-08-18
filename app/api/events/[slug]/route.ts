@@ -23,10 +23,7 @@ type RouteParams = {
  * GET /api/events/[slug]
  * Fetches a single events by its slug
  */
-export async function GET(
-  req: NextRequest,
-  { params }: RouteParams,
-): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     // Connect to database
     await connectDB();
@@ -36,10 +33,7 @@ export async function GET(
 
     // Validate slug parameter
     if (!slug || typeof slug !== "string" || slug.trim() === "") {
-      return NextResponse.json(
-        { message: "Invalid or missing slug parameter" },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "Invalid or missing slug parameter" }, { status: 400 });
     }
 
     // Sanitize slug (remove any potential malicious input)
@@ -57,10 +51,7 @@ export async function GET(
     }
 
     // Return successful response with events data
-    return NextResponse.json(
-      { message: "Event fetched successfully", event },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: "Event fetched successfully", event }, { status: 200 });
   } catch (error) {
     // Log error for debugging (only in development)
     if (process.env.NODE_ENV === "development") {
@@ -71,24 +62,17 @@ export async function GET(
     if (error instanceof Error) {
       // Handle database connection errors
       if (error.message.includes("MONGODB_URI")) {
-        return NextResponse.json(
-          { message: "Database configuration error" },
-          { status: 500 },
-        );
+        return NextResponse.json({ message: "Database configuration error" }, { status: 500 });
       }
 
-      // Return generic error with error message
       return NextResponse.json(
-        { message: "Failed to fetch events", error: error.message },
+        { message: "Failed to fetch events. Please try again later." },
         { status: 500 },
       );
     }
 
     // Handle unknown errors
-    return NextResponse.json(
-      { message: "An unexpected error occurred" },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: "An unexpected error occurred" }, { status: 500 });
   }
 }
 
@@ -96,10 +80,7 @@ export async function GET(
 // Updates an event from a multipart form. The image is optional: when no new
 // file is uploaded, the existing image URL is kept.
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: RouteParams,
-): Promise<NextResponse> {
+export async function PATCH(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   // Admin only
   if (!(await isAdmin())) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -107,11 +88,7 @@ export async function PATCH(
 
   // Rate limit check
   const ip = getClientIp(req);
-  const rateCheck = rateLimit(
-    `patch:${ip}`,
-    10,
-    60_000,
-  );
+  const rateCheck = rateLimit(`patch:${ip}`, 10, 60_000);
   if (!rateCheck.allowed) {
     return NextResponse.json(
       {
@@ -189,10 +166,7 @@ export async function PATCH(
     }
 
     return NextResponse.json(
-      {
-        message: "Event update failed",
-        error: e instanceof Error ? e.message : "Unknown",
-      },
+      { message: "Event update failed. Please try again later." },
       { status: 500 },
     );
   }

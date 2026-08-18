@@ -4,13 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteEvent } from "@/lib/actions/event.actions";
 
-const AdminDeleteButton = ({
-  slug,
-  title,
-}: {
-  slug: string;
-  title: string;
-}) => {
+const AdminDeleteButton = ({ slug, title }: { slug: string; title: string }) => {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
@@ -31,12 +25,7 @@ const AdminDeleteButton = ({
   };
 
   return (
-    <button
-      type="button"
-      className="action-delete"
-      onClick={handleClick}
-      disabled={busy}
-    >
+    <button type="button" className="action-delete" onClick={handleClick} disabled={busy}>
       {busy ? "Deleting…" : "Delete"}
     </button>
   );

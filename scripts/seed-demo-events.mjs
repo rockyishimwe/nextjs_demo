@@ -79,7 +79,7 @@ const EventSchema = new Schema(
     },
     capacity: { type: Number, min: 1 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 EventSchema.pre("save", function () {
@@ -121,12 +121,7 @@ function normalizeTime(timeString) {
     if (period === "PM" && hours !== 12) hours += 12;
     if (period === "AM" && hours === 12) hours = 0;
   }
-  if (
-    hours < 0 ||
-    hours > 23 ||
-    parseInt(minutes) < 0 ||
-    parseInt(minutes) > 59
-  ) {
+  if (hours < 0 || hours > 23 || parseInt(minutes) < 0 || parseInt(minutes) > 59) {
     throw new Error("Invalid time values");
   }
   return `${hours.toString().padStart(2, "0")}:${minutes}`;
@@ -173,11 +168,7 @@ const demoEvents = [
     audience: "Platform engineers & DevOps teams",
     organizer: "CNCF",
     capacity: 5000,
-    agenda: [
-      "Opening keynote",
-      "Kubernetes deep dives",
-      "Cloud Native ecosystem expo",
-    ],
+    agenda: ["Opening keynote", "Kubernetes deep dives", "Cloud Native ecosystem expo"],
     tags: ["kubernetes", "cloud-native", "cncf"],
   },
   {
@@ -195,11 +186,7 @@ const demoEvents = [
     audience: "Cloud architects & developers",
     organizer: "Amazon Web Services",
     capacity: 10000,
-    agenda: [
-      "Keynote: AWS CEO",
-      "Breakout sessions",
-      "Hands-on labs",
-    ],
+    agenda: ["Keynote: AWS CEO", "Breakout sessions", "Hands-on labs"],
     tags: ["aws", "cloud", "conference"],
   },
   {
@@ -217,11 +204,7 @@ const demoEvents = [
     audience: "React & frontend developers",
     organizer: "Vercel",
     capacity: 3000,
-    agenda: [
-      "Opening keynote",
-      "Framework talks",
-      "Workshops",
-    ],
+    agenda: ["Opening keynote", "Framework talks", "Workshops"],
     tags: ["nextjs", "react", "web"],
   },
   {
@@ -239,11 +222,7 @@ const demoEvents = [
     audience: "Cloud engineers & data teams",
     organizer: "Google Cloud",
     capacity: 5000,
-    agenda: [
-      "Keynote: Google Cloud",
-      "AI & ML sessions",
-      "Partner showcase",
-    ],
+    agenda: ["Keynote: Google Cloud", "AI & ML sessions", "Partner showcase"],
     tags: ["google-cloud", "ai", "infrastructure"],
   },
   {
@@ -256,16 +235,11 @@ const demoEvents = [
     mode: "offline",
     description:
       "A weekend-long hackathon for web3 builders. Ship a project, meet the ecosystem and compete for prizes in front of a global audience.",
-    overview:
-      "36 hours of building, mentoring and demoing at the world's largest startup campus.",
+    overview: "36 hours of building, mentoring and demoing at the world's largest startup campus.",
     audience: "Web3 & blockchain developers",
     organizer: "ETHGlobal",
     capacity: 800,
-    agenda: [
-      "Project submissions open",
-      "Hacking begins",
-      "Demo day & winners",
-    ],
+    agenda: ["Project submissions open", "Hacking begins", "Demo day & winners"],
     tags: ["web3", "hackathon", "ethereum"],
   },
   {
@@ -278,16 +252,11 @@ const demoEvents = [
     mode: "offline",
     description:
       "The premier event for open source developers, technologists and community leaders to collaborate, learn and share information across the open source ecosystem.",
-    overview:
-      "Connecting maintainers, contributors and companies advancing open source software.",
+    overview: "Connecting maintainers, contributors and companies advancing open source software.",
     audience: "Open source maintainers & contributors",
     organizer: "The Linux Foundation",
     capacity: 1500,
-    agenda: [
-      "Maintainers track",
-      "Community keynotes",
-      "Project booths",
-    ],
+    agenda: ["Maintainers track", "Community keynotes", "Project booths"],
     tags: ["open-source", "linux", "community"],
   },
 ];
@@ -317,9 +286,7 @@ async function seed() {
   }
 
   const total = await Event.countDocuments();
-  console.log(
-    `\nDone. ${created} created, ${updated} updated. Total events in DB: ${total}`
-  );
+  console.log(`\nDone. ${created} created, ${updated} updated. Total events in DB: ${total}`);
 
   await mongoose.disconnect();
 }

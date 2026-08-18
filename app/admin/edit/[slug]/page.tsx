@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Event from "@/app/database/event.model";
-import CreateEventForm, {
-  type EventFormData,
-} from "@/components/CreateEventForm";
+import CreateEventForm, { type EventFormData } from "@/components/CreateEventForm";
 
 export const dynamic = "force-dynamic";
 
@@ -12,11 +10,7 @@ export const metadata: Metadata = {
   title: "Edit Event | DevEvent",
 };
 
-const EditEventPage = async ({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) => {
+const EditEventPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
 
   let event: EventFormData | null = null;

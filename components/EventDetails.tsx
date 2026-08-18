@@ -8,15 +8,7 @@ import Image from "next/image";
 import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
 
-const EventDetailItem = ({
-  icon,
-  alt,
-  label,
-}: {
-  icon: string;
-  alt: string;
-  label: string;
-}) => (
+const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex-row-gap-2 items-center">
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={icon} alt={alt} width={17} height={17} />
@@ -90,13 +82,7 @@ const EventDetails = async ({ slug }: { slug: string }) => {
       <div className="details">
         {/*    Left Side - Event Content */}
         <div className="content">
-          <Image
-            src={image}
-            alt="Event Banner"
-            width={800}
-            height={800}
-            className="banner"
-          />
+          <Image src={image} alt="Event Banner" width={800} height={800} className="banner" />
 
           <section className="flex-col-gap-2">
             <h2>Overview</h2>
@@ -106,19 +92,11 @@ const EventDetails = async ({ slug }: { slug: string }) => {
           <section className="flex-col-gap-2">
             <h2>Event Details</h2>
 
-            <EventDetailItem
-              icon="/icons/calendar.svg"
-              alt="calendar"
-              label={date}
-            />
+            <EventDetailItem icon="/icons/calendar.svg" alt="calendar" label={date} />
             <EventDetailItem icon="/icons/clock.svg" alt="clock" label={time} />
             <EventDetailItem icon="/icons/pin.svg" alt="pin" label={location} />
             <EventDetailItem icon="/icons/mode.svg" alt="mode" label={mode} />
-            <EventDetailItem
-              icon="/icons/audience.svg"
-              alt="audience"
-              label={audience}
-            />
+            <EventDetailItem icon="/icons/audience.svg" alt="audience" label={audience} />
           </section>
 
           <EventAgenda agendaItems={agenda} />

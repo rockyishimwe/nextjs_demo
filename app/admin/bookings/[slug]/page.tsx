@@ -13,11 +13,7 @@ export const metadata: Metadata = {
   title: "Bookings | DevEvent",
 };
 
-const BookingsPage = async ({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) => {
+const BookingsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in" as Route);
   if (!(await isAdmin())) redirect("/" as Route);

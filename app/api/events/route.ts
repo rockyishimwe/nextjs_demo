@@ -58,10 +58,7 @@ export async function POST(req: NextRequest) {
     // Validate and process image
     const file = formData.get("image") as File | null;
     if (!file) {
-      return NextResponse.json(
-        { message: "Image file is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "Image file is required" }, { status: 400 });
     }
 
     // Upload image to Cloudinary
@@ -103,10 +100,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      {
-        message: "Event creation failed",
-        error: e instanceof Error ? e.message : "Unknown",
-      },
+      { message: "Event creation failed. Please try again later." },
       { status: 500 },
     );
   }
@@ -138,17 +132,11 @@ export async function GET(req: NextRequest) {
     await connectDB();
     const events = await Event.find().sort({ createdAt: -1 });
 
-    return NextResponse.json(
-      { message: "Events fetched successfully", events },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: "Events fetched successfully", events }, { status: 200 });
   } catch (e) {
     console.error("Event fetching failed:", e);
     return NextResponse.json(
-      {
-        message: "Event fetching failed",
-        error: e instanceof Error ? e.message : "Unknown",
-      },
+      { message: "Event fetching failed. Please try again later." },
       { status: 500 },
     );
   }
