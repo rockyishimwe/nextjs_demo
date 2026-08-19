@@ -13,9 +13,6 @@ declare global {
 
 import { getServerEnv } from "./env";
 
-const env = getServerEnv();
-const MONGODB_URI = env.MONGODB_URI;
-
 // Initialize the cache on the global object to persist across hot reloads in development
 const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
@@ -36,7 +33,10 @@ async function connectDB(): Promise<typeof mongoose> {
 
   // Return existing connection promise if one is in progress
   if (!cached.promise) {
-    // Validate MongoDB URI exists
+    // Validate environment variables at runtime (not at import time, so build works)
+    const env = getServerEnv();
+    const MONGODB_URI = env.MONGODB_URI;
+
     if (!MONGODB_URI) {
       throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
     }
@@ -45,7 +45,7 @@ async function connectDB(): Promise<typeof mongoose> {
     };
 
     // Create a new connection promise
-    cached.promise = mongoose.connect(MONGODB_URI!, options).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI, options).then((mongoose) => {
       return mongoose;
     });
   }
