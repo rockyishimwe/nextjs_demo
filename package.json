@@ -4,15 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && opennextjs-cloudflare build",
     "start": "next start",
     "seed": "node scripts/seed-demo-events.mjs",
     "lint": "eslint",
     "format": "prettier --write .",
     "preview": "opennextjs-cloudflare build",
-    "cf:build": "next build && opennextjs-cloudflare build",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf:deploy": "opennextjs-cloudflare build && wrangler deploy"
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.7.6",
@@ -40,6 +38,7 @@
     "eslint-config-next": "16.2.7",
     "prettier": "^3.9.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.124.0"
   }
 }
