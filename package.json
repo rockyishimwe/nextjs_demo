@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && opennextjs-cloudflare build",
+    "build": "next build",
     "start": "next start",
     "seed": "node scripts/seed-demo-events.mjs",
     "lint": "eslint",
