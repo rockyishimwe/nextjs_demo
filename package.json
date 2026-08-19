@@ -29,7 +29,6 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.20.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -38,7 +37,6 @@
     "eslint-config-next": "16.2.7",
     "prettier": "^3.9.6",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wrangler": "^4.124.0"
+    "typescript": "^5"
   }
 }
