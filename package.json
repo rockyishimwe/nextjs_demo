@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && opennextjs-cloudflare build",
+    "build": "npm run validate-env && next build && opennextjs-cloudflare build",
     "start": "next start",
     "seed": "node scripts/seed-demo-events.mjs",
     "lint": "eslint",
     "format": "prettier --write .",
-    "preview": "opennextjs-cloudflare build",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "preview": "npm run validate-env && opennextjs-cloudflare build",
+    "deploy": "npm run validate-env && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "validate-env": "node scripts/validate-env.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.7.6",
