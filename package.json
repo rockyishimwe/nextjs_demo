@@ -10,7 +10,9 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "preview": "opennextjs-cloudflare build",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "cf:build": "next build && opennextjs-cloudflare build",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf:deploy": "opennextjs-cloudflare build && wrangler deploy"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.7.6",
