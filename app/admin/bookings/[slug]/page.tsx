@@ -1,60 +1,39 @@
-import type { Metadata, Route } from "next";
-import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
-import { isAdmin } from "@/lib/admin";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Event, Booking } from "@/app/database";
 import connectDB from "@/lib/mongodb";
-import Event from "@/app/database/event.model";
-import Booking from "@/app/database/booking.model";
 
-export const dynamic = "force-dynamic";
+type Props = { params: Promise<{ slug: string }> };
 
-export const metadata: Metadata = {
-  title: "Bookings | DevEvent",
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  return { title: `Bookings — ${slug} | DevEvent` };
+}
 
-const BookingsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in" as Route);
-  if (!(await isAdmin())) redirect("/" as Route);
-
+const BookingsPage = async ({ params }: Props) => {
   const { slug } = await params;
 
-  let event: { title: string } | null = null;
-  let bookings: { _id: unknown; email: string; createdAt: Date }[] = [];
+  await connectDB();
 
-  try {
-    await connectDB();
-    const doc = await Event.findOne({ slug }).lean();
-    if (doc) {
-      event = { title: doc.title };
-      bookings = (await Booking.find({ eventId: doc._id })
-        .sort({ createdAt: -1 })
-        .lean()) as typeof bookings;
-    }
-  } catch (error) {
-    console.error("Failed to load bookings:", error);
-  }
-
+  const event = await Event.findOne({ slug }).lean();
   if (!event) return notFound();
 
-  return (
-    <section id="admin">
-      <div className="header">
-        <h1>Bookings</h1>
-        <Link href={"/admin" as Route} className="add-new">
-          Back to Events
-        </Link>
-      </div>
+  const bookings = await Booking.find({ eventId: event._id })
+    .sort({ createdAt: -1 })
+    .lean();
 
-      <p className="text-light-100 text-lg">{event.title}</p>
+  return (
+    <section id="admin" className="space-y-6">
+      <div className="header">
+        <h1 className="text-3xl font-bold">Bookings for {event.title}</h1>
+      </div>
 
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Email</th>
-              <th>Booked at</th>
+              <th>Booked At</th>
             </tr>
           </thead>
           <tbody>
@@ -67,9 +46,9 @@ const BookingsPage = async ({ params }: { params: Promise<{ slug: string }> }) =
             )}
 
             {bookings.map((booking) => (
-              <tr key={String(booking._id)}>
+              <tr key={booking._id.toString()}>
                 <td>{booking.email}</td>
-                <td>{new Date(booking.createdAt).toLocaleString()}</td>
+                <td>{new Date(booking.createdAt).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

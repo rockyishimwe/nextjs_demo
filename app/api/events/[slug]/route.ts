@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin";
 import connectDB from "@/lib/mongodb";
-import Event from "@/app/database/event.model";
+import { Event } from "@/app/database";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
 import {
   ValidationError,
@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 
   const ip = getClientIp(req);
-  const rateCheck = rateLimit(`patch:${ip}`, 10, 60_000);
+  const rateCheck = await rateLimit(`patch:${ip}`, 10, 60_000);
   if (!rateCheck.allowed) {
     return apiError("Too many requests. Please try again later.", 429);
   }

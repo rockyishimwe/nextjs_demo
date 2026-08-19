@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
-import Event from "@/app/database/event.model";
+import { Event } from "@/app/database";
 import CreateEventForm, { type EventFormData } from "@/components/CreateEventForm";
 
 export const dynamic = "force-dynamic";

@@ -1,9 +1,7 @@
 "use server";
 import { isAdmin } from "../admin";
-import Event from "@/app/database/event.model";
-import Booking from "@/app/database/booking.model";
+import { Event, Booking, type IEvent } from "@/app/database";
 import connectDB from "../mongodb";
-import type { IEvent } from "@/app/database";
 import { cacheEvents, cacheEventBySlug } from "../cache";
 import { revalidatePath } from "next/cache";
 

@@ -1,6 +1,6 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
-import Event, { IEvent } from "@/app/database/event.model";
+import { Event, type IEvent } from "@/app/database";
 import connectDB from "@/lib/mongodb";
 import { unstable_cache } from "next/cache";
 
@@ -8,7 +8,7 @@ const getHomeEvents = unstable_cache(
   async () => {
     try {
       await connectDB();
-      return (await Event.find().sort({ createdAt: -1 })).map((event) => event.toObject());
+      return (await Event.find().sort({ createdAt: -1 }).limit(12)).map((event) => event.toObject());
     } catch (error) {
       console.error("Failed to fetch events:", error);
       return [];

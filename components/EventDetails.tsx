@@ -1,6 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import Event, { IEvent } from "@/app/database/event.model";
+import { Event, type IEvent } from "@/app/database";
 import connectDB from "@/lib/mongodb";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
 import { formatDate, formatTime } from "@/lib/format";
@@ -127,6 +127,10 @@ const EventDetails = async ({ slug }: { slug: string }) => {
               slug={event.slug}
               capacity={capacity}
               bookingsCount={bookingsCount}
+              eventTitle={event.title}
+              eventDate={event.date}
+              eventTime={event.time}
+              eventVenue={event.venue}
             />
           </div>
         </aside>

@@ -11,7 +11,10 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+import { getServerEnv } from "./env";
+
+const env = getServerEnv();
+const MONGODB_URI = env.MONGODB_URI;
 
 // Initialize the cache on the global object to persist across hot reloads in development
 const cached: MongooseCache = global.mongoose || { conn: null, promise: null };

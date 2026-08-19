@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Route } from "next";
 import type { IEvent } from "@/app/database";
 import AdminDeleteButton from "./AdminDeleteButton";
 import { formatDate, formatTime } from "@/lib/format";
@@ -26,7 +25,7 @@ const EventManagementTable = ({
     <section id="admin">
       <div className="header">
         <h1>Event Management</h1>
-        <Link href={"/admin/create-event" as Route} className="add-new">
+        <Link href="/admin/create-event" className="add-new">
           Add New Event
         </Link>
       </div>
@@ -56,9 +55,19 @@ const EventManagementTable = ({
             {events.length === 0 && (
               <tr>
                 <td colSpan={6} className="empty">
-                  {search
-                    ? "No events match your search."
-                    : "No events yet. Click “Add New Event” to create one."}
+                  <div className="flex flex-col items-center gap-3 py-8">
+                    <svg className="h-16 w-16 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                    <p className="text-base font-medium text-white/60">
+                      {search ? "No events match your search." : "No events yet"}
+                    </p>
+                    {!search && (
+                      <Link href="/admin/create-event" className="add-new">
+                        Create your first event
+                      </Link>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}
@@ -99,10 +108,10 @@ const EventManagementTable = ({
                   </td>
                   <td>
                     <div className="actions">
-                      <Link href={`/admin/bookings/${event.slug}` as Route} className="action-view">
+                      <Link href={`/admin/bookings/${event.slug}`} className="action-view">
                         View
                       </Link>
-                      <Link href={`/admin/edit/${event.slug}` as Route} className="action-edit">
+                      <Link href={`/admin/edit/${event.slug}`} className="action-edit">
                         Edit
                       </Link>
                       <AdminDeleteButton slug={event.slug} title={event.title} />
@@ -121,7 +130,7 @@ const EventManagementTable = ({
             href={
               `${paginationPath}?page=${page - 1}${
                 search ? `&q=${encodeURIComponent(search)}` : ""
-              }` as Route
+              }`
             }
             className="page-btn"
           >
@@ -140,7 +149,7 @@ const EventManagementTable = ({
             href={
               `${paginationPath}?page=${page + 1}${
                 search ? `&q=${encodeURIComponent(search)}` : ""
-              }` as Route
+              }`
             }
             className="page-btn"
           >

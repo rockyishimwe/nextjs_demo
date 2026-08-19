@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import Event from "@/app/database/event.model";
+import { Event } from "@/app/database";
 import connectDB from "@/lib/mongodb";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

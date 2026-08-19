@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import EventDetails from "@/components/EventDetails";
-import Event from "@/app/database/event.model";
+import { Event } from "@/app/database";
 import connectDB from "@/lib/mongodb";
 import type { Metadata } from "next";
 

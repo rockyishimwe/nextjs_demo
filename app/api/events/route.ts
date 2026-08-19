@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   }
 
   const ip = getClientIp(req);
-  const rateCheck = rateLimit(`post:${ip}`, RATE_LIMIT_MAX_POST, RATE_LIMIT_WINDOW_MS);
+  const rateCheck = await rateLimit(`post:${ip}`, RATE_LIMIT_MAX_POST, RATE_LIMIT_WINDOW_MS);
   if (!rateCheck.allowed) {
     return apiError("Too many requests. Please try again later.", 429);
   }
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rateCheck = rateLimit(`get:${ip}`, RATE_LIMIT_MAX_GET, RATE_LIMIT_WINDOW_MS);
+  const rateCheck = await rateLimit(`get:${ip}`, RATE_LIMIT_MAX_GET, RATE_LIMIT_WINDOW_MS);
   if (!rateCheck.allowed) {
     return apiError("Too many requests. Please try again later.", 429);
   }

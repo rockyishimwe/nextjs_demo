@@ -1,6 +1,5 @@
 "use server";
-import Booking from "@/app/database/booking.model";
-import Event from "@/app/database/event.model";
+import { Booking, Event } from "@/app/database";
 import connectDB from "../mongodb";
 import { rateLimit } from "../rateLimiter";
 import { sendBookingConfirmation } from "../email";
@@ -21,7 +20,7 @@ export const createBooking = async ({
     }
 
     // Rate limit check by email (max 5 requests per minute)
-    const rateCheck = rateLimit(`booking:${email.trim().toLowerCase()}`, 5, 60_000);
+    const rateCheck = await rateLimit(`booking:${email.trim().toLowerCase()}`, 5, 60_000);
     if (!rateCheck.allowed) {
       return { success: false, message: "Too many booking attempts. Please try again later." };
     }

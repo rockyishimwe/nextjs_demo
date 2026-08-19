@@ -28,7 +28,13 @@ const EventsPage = async ({ searchParams }: { searchParams: Promise<{ page?: str
       </p>
 
       {events.length === 0 ? (
-        <p className="text-center mt-20 text-light-100">No events yet. Check back soon!</p>
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+          <svg className="h-20 w-20 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          </svg>
+          <p className="text-lg font-medium text-white/60">No events yet</p>
+          <p className="text-sm text-white/40">Check back soon — new events are added regularly!</p>
+        </div>
       ) : (
         <>
           <ul className="events mt-12">

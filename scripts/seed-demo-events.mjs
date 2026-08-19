@@ -154,7 +154,7 @@ const demoEvents = [
     tags: ["rca", "summit", "rwanda"],
   },
   {
-    image: "/images/event2.png",
+    image: "/images/event2.jpg",
     title: "KubeCon + CloudNativeCon Europe 2026",
     location: "Vienna, Austria",
     date: "2026-03-18",
@@ -172,7 +172,7 @@ const demoEvents = [
     tags: ["kubernetes", "cloud-native", "cncf"],
   },
   {
-    image: "/images/event3.png",
+    image: "/images/event3.jpg",
     title: "AWS re:Invent 2025",
     location: "Las Vegas, NV, USA",
     date: "2025-12-01",
@@ -190,7 +190,7 @@ const demoEvents = [
     tags: ["aws", "cloud", "conference"],
   },
   {
-    image: "/images/event4.png",
+    image: "/images/event4.jpg",
     title: "Next.js Conf 2025",
     location: "Los Angeles, CA, USA (Hybrid)",
     date: "2025-11-12",
@@ -208,7 +208,7 @@ const demoEvents = [
     tags: ["nextjs", "react", "web"],
   },
   {
-    image: "/images/event5.png",
+    image: "/images/event5.jpg",
     title: "Google Cloud Next 2026",
     location: "San Jose, CA, USA",
     date: "2026-04-07",
