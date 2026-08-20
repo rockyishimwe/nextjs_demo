@@ -1,69 +1,67 @@
 import mongoose from "mongoose";
 
-// Define the connection cache type
-type MongooseCache = {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-};
+/**
+ * Cloudflare Workers-friendly MongoDB connection.
+ *
+ * Uses globalThis caching so the connection survives across warm invocations
+ * within the same isolate. Each Worker invocation gets a fresh isolate on cold
+ * start, but warm requests reuse the cached connection — saving subrequests
+ * and keeping us within the Free plan's 50-subrequest limit.
+ */
 
-// Extend the global object to include our mongoose cache
-declare global {
-  var mongoose: MongooseCache | undefined;
+const MONGODB_URI = process.env.MONGODB_URI as string;
+
+if (!MONGODB_URI) {
+  throw new Error("Missing MONGODB_URI environment variable");
 }
 
-import { getServerEnv } from "./env";
+// Use globalThis (standard for Workers) to cache the connection across warm requests
+const cached = globalThis as typeof globalThis & {
+  mongoose?: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  };
+};
 
-// Initialize the cache on the global object to persist across hot reloads in development
-const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
-
-if (!global.mongoose) {
-  global.mongoose = cached;
+if (!cached.mongoose) {
+  cached.mongoose = {
+    conn: null,
+    promise: null,
+  };
 }
 
 /**
  * Establishes a connection to MongoDB using Mongoose.
- * Caches the connection to prevent multiple connections during development hot reloads.
- * @returns Promise resolving to the Mongoose instance
+ * Returns the cached connection on warm requests to avoid
+ * repeated connection setup (which eats into subrequest limits).
  */
 async function connectDB(): Promise<typeof mongoose> {
-  // Return existing connection if available
-  if (cached.conn) {
-    return cached.conn;
+  // Return existing connection if available (warm request)
+  if (cached.mongoose!.conn) {
+    return cached.mongoose!.conn;
   }
 
-  // Return existing connection promise if one is in progress
-  if (!cached.promise) {
-    // Validate environment variables at runtime (not at import time, so build works)
-    const env = getServerEnv();
-    const MONGODB_URI = env.MONGODB_URI;
-
-    if (!MONGODB_URI) {
-      throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
-    }
-    const options = {
-      bufferCommands: false, // Disable Mongoose buffering
-      maxPoolSize: 1, // Cloudflare Workers: keep connections minimal
-      minPoolSize: 0,
+  // Create a new connection only if one isn't in progress
+  if (!cached.mongoose!.promise) {
+    cached.mongoose!.promise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,        // Don't buffer — fail fast
+      maxPoolSize: 1,               // Single connection per Worker isolate
+      minPoolSize: 0,               // Don't keep idle connections
       serverSelectionTimeoutMS: 5000, // Fail fast if MongoDB is unreachable
-      heartbeatFrequencyMS: 0, // Disable heartbeats to reduce subrequests
-    };
-
-    // Create a new connection promise
-    cached.promise = mongoose.connect(MONGODB_URI, options).then((mongoose) => {
-      return mongoose;
+      heartbeatFrequencyMS: 0,      // No heartbeats — saves subrequests
     });
   }
 
   try {
-    // Wait for the connection to establish
-    cached.conn = await cached.promise;
+    cached.mongoose!.conn = await cached.mongoose!.promise;
   } catch (error) {
-    // Reset promise on error to allow retry
-    cached.promise = null;
+    // Reset so the next request can retry
+    cached.mongoose!.promise = null;
+    cached.mongoose!.conn = null;
     throw error;
   }
 
-  return cached.conn;
+  return cached.mongoose!.conn;
 }
 
 export default connectDB;
