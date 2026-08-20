@@ -12,7 +12,6 @@
     "enabled": true
   },
   "limits": {
-    "cpu_ms": 30000,
     "subrequests": 128
   }
 }
