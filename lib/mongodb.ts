@@ -42,6 +42,10 @@ async function connectDB(): Promise<typeof mongoose> {
     }
     const options = {
       bufferCommands: false, // Disable Mongoose buffering
+      maxPoolSize: 1, // Cloudflare Workers: keep connections minimal
+      minPoolSize: 0,
+      serverSelectionTimeoutMS: 5000, // Fail fast if MongoDB is unreachable
+      heartbeatFrequencyMS: 0, // Disable heartbeats to reduce subrequests
     };
 
     // Create a new connection promise
