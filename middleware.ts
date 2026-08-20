@@ -1,5 +1,8 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
+// Force Edge runtime — OpenNext Cloudflare does not yet support Node.js middleware.
+export const runtime = "edge";
+
 // Route protection is done per-page/layout with auth() checks (see
 // app/admin/layout.tsx and app/events/page.tsx). This middleware keeps Clerk's
 // auth state available across requests without path-based matching.
