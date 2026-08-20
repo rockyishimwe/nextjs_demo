@@ -1,7 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
 // Route protection is done per-page/layout with auth() checks (see
-// app/admin/layout.tsx and app/events/page.tsx). This proxy keeps Clerk's
+// app/admin/layout.tsx and app/events/page.tsx). This middleware keeps Clerk's
 // auth state available across requests without path-based matching.
 export default clerkMiddleware();
 
