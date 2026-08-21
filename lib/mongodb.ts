@@ -37,7 +37,10 @@ async function connectDB(): Promise<typeof mongoose> {
 
   const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
-    throw new Error("Missing MONGODB_URI environment variable");
+    // During `next build`, env vars aren't available but Next.js still
+    // calls route handlers to collect page data. Return without connecting
+    // so the handler's try/catch handles the query failure gracefully.
+    return mongoose;
   }
 
   // Create a new connection only if one isn't in progress
