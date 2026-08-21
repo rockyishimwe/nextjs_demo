@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "keep_vars": true,
   "main": ".open-next/worker.js",
   "name": "nextjs-demo",
   "compatibility_date": "2026-08-15",
