@@ -1,7 +1,5 @@
 import { NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin";
-import connectDB from "@/lib/mongodb";
-import { Event } from "@/app/database";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
 import {
   ValidationError,
@@ -31,6 +29,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const { default: connectDB } = await import("@/lib/mongodb");
+    const { default: Event } = await import("@/app/database/event.model");
+
     validateCloudinaryConfig();
     await connectDB();
 
@@ -88,6 +89,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const { default: connectDB } = await import("@/lib/mongodb");
+    const { default: Event } = await import("@/app/database/event.model");
+
     await connectDB();
     const events = await Event.find().sort({ createdAt: -1 });
     return apiOk({ message: "Events fetched successfully", events }, 200, {

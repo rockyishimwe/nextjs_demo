@@ -1,7 +1,5 @@
 import { NextRequest } from "next/server";
 import { isAdmin } from "@/lib/admin";
-import connectDB from "@/lib/mongodb";
-import { Event } from "@/app/database";
 import { rateLimit, getClientIp } from "@/lib/rateLimiter";
 import {
   ValidationError,
@@ -21,6 +19,9 @@ type RouteParams = {
 
 export async function GET(_req: NextRequest, { params }: RouteParams) {
   try {
+    const { default: connectDB } = await import("@/lib/mongodb");
+    const { default: Event } = await import("@/app/database/event.model");
+
     await connectDB();
     const { slug } = await params;
 
@@ -60,6 +61,9 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 
   try {
+    const { default: connectDB } = await import("@/lib/mongodb");
+    const { default: Event } = await import("@/app/database/event.model");
+
     validateCloudinaryConfig();
     await connectDB();
 

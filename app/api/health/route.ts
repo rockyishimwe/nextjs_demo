@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import mongoose from "mongoose";
 
 export async function GET() {
   try {
+    const { default: connectDB } = await import("@/lib/mongodb");
+    const { default: mongoose } = await import("mongoose");
+
     await connectDB();
 
     const dbState = mongoose.connection.readyState;
