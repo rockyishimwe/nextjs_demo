@@ -9,12 +9,6 @@ import mongoose from "mongoose";
  * and keeping us within the Free plan's 50-subrequest limit.
  */
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-if (!MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI environment variable");
-}
-
 // Use globalThis (standard for Workers) to cache the connection across warm requests
 const cached = globalThis as typeof globalThis & {
   mongoose?: {
@@ -39,6 +33,11 @@ async function connectDB(): Promise<typeof mongoose> {
   // Return existing connection if available (warm request)
   if (cached.mongoose!.conn) {
     return cached.mongoose!.conn;
+  }
+
+  const MONGODB_URI = process.env.MONGODB_URI;
+  if (!MONGODB_URI) {
+    throw new Error("Missing MONGODB_URI environment variable");
   }
 
   // Create a new connection only if one isn't in progress
