@@ -5,9 +5,11 @@ import Image from "next/image";
 import type { Route } from "next";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useState } from "react";
+import { useAdmin } from "@/lib/useAdmin";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isAdmin = useAdmin();
 
   return (
     <header>
@@ -40,12 +42,16 @@ const Navbar = () => {
           </Show>
 
           <Show when="signed-in">
-            <li>
-              <Link href={"/admin" as Route}>Manage Events</Link>
-            </li>
-            <li>
-              <Link href={"/admin/create-event" as Route}>Create Event</Link>
-            </li>
+            {isAdmin && (
+              <>
+                <li>
+                  <Link href={"/admin" as Route}>Manage Events</Link>
+                </li>
+                <li>
+                  <Link href={"/admin/create-event" as Route}>Create Event</Link>
+                </li>
+              </>
+            )}
             <li>
               <UserButton />
             </li>
@@ -93,12 +99,16 @@ const Navbar = () => {
             </Show>
 
             <Show when="signed-in">
-              <li>
-                <Link href={"/admin" as Route} onClick={() => setMobileOpen(false)}>Manage Events</Link>
-              </li>
-              <li>
-                <Link href={"/admin/create-event" as Route} onClick={() => setMobileOpen(false)}>Create Event</Link>
-              </li>
+              {isAdmin && (
+                <>
+                  <li>
+                    <Link href={"/admin" as Route} onClick={() => setMobileOpen(false)}>Manage Events</Link>
+                  </li>
+                  <li>
+                    <Link href={"/admin/create-event" as Route} onClick={() => setMobileOpen(false)}>Create Event</Link>
+                  </li>
+                </>
+              )}
               <li>
                 <UserButton />
               </li>
