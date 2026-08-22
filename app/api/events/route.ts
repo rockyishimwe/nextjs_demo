@@ -75,7 +75,8 @@ export async function POST(req: NextRequest) {
     if (e instanceof Error && e.message.startsWith("Cloudinary")) {
       return apiError(e.message, 400);
     }
-    const msg = e instanceof Error ? e.message : "Unknown error";
+    const msg = e instanceof Error ? e.message : typeof e === "string" ? e : JSON.stringify(e);
+    console.error("[POST /api/events] Full error:", e);
     return apiError(`Event creation failed: ${msg}`, 500, e);
   }
 }
