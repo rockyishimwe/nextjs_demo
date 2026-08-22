@@ -4,10 +4,9 @@ export default clerkMiddleware();
 
 export const config = {
   matcher: [
-    // Protect admin and auth pages — API routes handle their own auth
-    "/admin/:path*",
-    "/sign-in/:path*",
-    "/sign-up/:path*",
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
     "/__clerk/:path*",
   ],
 };

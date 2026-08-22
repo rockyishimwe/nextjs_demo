@@ -50,17 +50,16 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
 // ─── PATCH /api/events/[slug] ───────────────────────────────────────────────
 
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
-  if (!(await isAdmin())) {
-    return apiError("Unauthorized", 401);
-  }
-
-  const ip = getClientIp(req);
-  const rateCheck = await rateLimit(`patch:${ip}`, 10, 60_000);
-  if (!rateCheck.allowed) {
-    return apiError("Too many requests. Please try again later.", 429);
-  }
-
   try {
+    if (!(await isAdmin())) {
+      return apiError("Unauthorized", 401);
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = await rateLimit(`patch:${ip}`, 10, 60_000);
+    if (!rateCheck.allowed) {
+      return apiError("Too many requests. Please try again later.", 429);
+    }
     const { default: connectDB } = await import("@/lib/mongodb");
     const { default: Event } = await import("@/app/database/event.model");
 

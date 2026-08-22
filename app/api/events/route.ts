@@ -18,17 +18,17 @@ const RATE_LIMIT_MAX_GET = 30;
 // ─── POST /api/events ────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) {
-    return apiError("Unauthorized", 401);
-  }
-
-  const ip = getClientIp(req);
-  const rateCheck = await rateLimit(`post:${ip}`, RATE_LIMIT_MAX_POST, RATE_LIMIT_WINDOW_MS);
-  if (!rateCheck.allowed) {
-    return apiError("Too many requests. Please try again later.", 429);
-  }
-
   try {
+    if (!(await isAdmin())) {
+      return apiError("Unauthorized", 401);
+    }
+
+    const ip = getClientIp(req);
+    const rateCheck = await rateLimit(`post:${ip}`, RATE_LIMIT_MAX_POST, RATE_LIMIT_WINDOW_MS);
+    if (!rateCheck.allowed) {
+      return apiError("Too many requests. Please try again later.", 429);
+    }
+
     const { default: connectDB } = await import("@/lib/mongodb");
     const { default: Event } = await import("@/app/database/event.model");
 
@@ -82,13 +82,13 @@ export async function POST(req: NextRequest) {
 // ─── GET /api/events ─────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const ip = getClientIp(req);
-  const rateCheck = await rateLimit(`get:${ip}`, RATE_LIMIT_MAX_GET, RATE_LIMIT_WINDOW_MS);
-  if (!rateCheck.allowed) {
-    return apiError("Too many requests. Please try again later.", 429);
-  }
-
   try {
+    const ip = getClientIp(req);
+    const rateCheck = await rateLimit(`get:${ip}`, RATE_LIMIT_MAX_GET, RATE_LIMIT_WINDOW_MS);
+    if (!rateCheck.allowed) {
+      return apiError("Too many requests. Please try again later.", 429);
+    }
+
     const { default: connectDB } = await import("@/lib/mongodb");
     const { default: Event } = await import("@/app/database/event.model");
 
